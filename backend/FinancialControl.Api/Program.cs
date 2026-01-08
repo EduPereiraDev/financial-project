@@ -55,10 +55,22 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins(allowedOrigins)
-              .AllowAnyMethod()
-              .AllowAnyHeader()
-              .AllowCredentials();
+        policy.SetIsOriginAllowed(origin =>
+        {
+            // Permitir localhost
+            if (origin.StartsWith("http://localhost")) return true;
+            
+            // Permitir domínio principal do Vercel
+            if (allowedOrigins.Any(o => o == origin)) return true;
+            
+            // Permitir todos os subdomínios de preview do Vercel
+            if (origin.Contains(".vercel.app")) return true;
+            
+            return false;
+        })
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowCredentials();
     });
 });
 
