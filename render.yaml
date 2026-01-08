@@ -1,0 +1,28 @@
+services:
+  # Backend API (.NET 9)
+  - type: web
+    name: financial-control-api
+    env: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: free
+    region: oregon
+    branch: main
+    healthCheckPath: /health
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ASPNETCORE_URLS
+        value: http://+:8080
+      - key: ConnectionStrings__DefaultConnection
+        sync: false
+      - key: JwtSettings__Secret
+        generateValue: true
+      - key: JwtSettings__Issuer
+        value: FinancialControlAPI
+      - key: JwtSettings__Audience
+        value: FinancialControlApp
+      - key: JwtSettings__ExpirationInDays
+        value: 7
+      - key: CORS__AllowedOrigins
+        value: https://financial-control-frontend.vercel.app,http://localhost:3000
