@@ -10,6 +10,7 @@ import AccountMembersPage from '@/pages/AccountMembersPage'
 import AcceptInvitationPage from '@/pages/AcceptInvitationPage'
 import AlertsPage from '@/pages/AlertsPage'
 import BankingPage from '@/pages/BankingPage'
+import BudgetsPage from '@/pages/BudgetsPage'
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, loading } = useAuth()
@@ -83,7 +84,16 @@ function App() {
             </PrivateRoute>
           }
         />
+        <Route
+          path="/budgets"
+          element={
+            <PrivateRoute>
+              <BudgetsPage />
+            </PrivateRoute>
+          }
+        />
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   )
