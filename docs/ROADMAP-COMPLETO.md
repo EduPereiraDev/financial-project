@@ -81,13 +81,16 @@
 - `docs/RECURRING-TRANSACTIONS-TESTS.md` - Testes e exemplos técnicos (414 linhas)
 - `docs/IMPLEMENTATION-SUMMARY-v0.2.0.md` - Resumo executivo completo (390 linhas)
 
-### v0.3.0 - Compartilhamento de Conta ✅ **COMPLETO**
+### v0.3.0 - Compartilhamento de Conta ✅ **100% COMPLETO**
 
 #### Backend Implementado (09/01/2026) ✅
 - ✅ Modelo `Invitation` com 5 status (Pending, Accepted, Rejected, Expired, Cancelled)
 - ✅ Migration aplicada no Supabase (6 índices)
-- ✅ `InvitationService` com 273 linhas e 6 métodos principais
+- ✅ `InvitationService` com 295 linhas e 6 métodos principais
 - ✅ `InvitationsController` com 5 endpoints REST
+- ✅ `EmailService` com 200 linhas e template HTML profissional
+- ✅ SendGrid 9.29.3 instalado e integrado
+- ✅ Envio automático de email ao criar convite
 - ✅ Geração de token seguro (32 bytes, Base64 URL-safe)
 - ✅ Validação de permissões (apenas Owner pode convidar)
 - ✅ Verificação de email duplicado
@@ -102,37 +105,60 @@
 - ✅ `invitationService` com 5 métodos
 - ✅ `AccountMembersPage` com lista de membros e convites (185 linhas)
 - ✅ `InviteMemberModal` com seleção de roles (114 linhas)
+- ✅ `AcceptInvitationPage` completa com validações (200 linhas)
 - ✅ Rota `/members` configurada
+- ✅ Rota `/accept-invitation/:token` configurada
 - ✅ Cards visuais para membros ativos
 - ✅ Lista de convites pendentes com status
 - ✅ Badges coloridos por status (Pending, Accepted, Expired, etc)
 - ✅ Seleção visual de níveis de acesso com descrições
 - ✅ Botão de cancelar convite (apenas pendentes)
+- ✅ Interface de aceitar/rejeitar convite
+- ✅ Validação de token expirado
 - ✅ Formatação de datas em português
-- ✅ Build bem-sucedido (998 módulos, 1.8s)
+- ✅ Build bem-sucedido (999 módulos, 1.9s)
 - ✅ Commit e push para produção
 
+#### Sistema de Email (09/01/2026) ✅
+- ✅ Template HTML responsivo e profissional
+- ✅ Template texto plano alternativo
+- ✅ Link direto para aceitar convite
+- ✅ Informações de role e descrição
+- ✅ Aviso de expiração (7 dias)
+- ✅ Fallback para console.log (modo dev)
+- ✅ Tratamento de erros (não falha criação)
+- ✅ Configurável via appsettings.json
+
 #### Endpoints REST (09/01/2026) ✅
-1. ✅ `POST /api/invitations` - Criar convite (JWT)
+1. ✅ `POST /api/invitations` - Criar convite + enviar email (JWT)
 2. ✅ `GET /api/invitations/account/{id}` - Listar convites (JWT)
 3. ✅ `GET /api/invitations/token/{token}` - Buscar por token (público)
 4. ✅ `POST /api/invitations/accept` - Aceitar convite (JWT)
 5. ✅ `DELETE /api/invitations/{id}` - Cancelar convite (JWT)
 
-#### Estatísticas da Implementação
-- **Arquivos criados**: 11
-- **Arquivos modificados**: 3
-- **Linhas de código**: ~1.180
-- **Commits**: 2
-- **Tempo de desenvolvimento**: ~2 horas
+#### Estatísticas da Implementação Final
+- **Arquivos criados**: 13
+- **Arquivos modificados**: 5
+- **Linhas de código**: ~1.600
+- **Commits**: 5
+- **Tempo de desenvolvimento**: ~3 horas
 - **Build status**: ✅ 100% sucesso
 - **Deploy status**: ⏳ Em andamento
 
-#### Funcionalidades Pendentes
-- ⏳ Página de aceitar convite (frontend)
-- ⏳ Envio de email automático com link do convite
+#### Funcionalidades Implementadas (100%)
+- ✅ Página de membros da conta
+- ✅ Modal de convidar membro
+- ✅ Página de aceitar convite
+- ✅ Envio automático de email
+- ✅ Sistema de permissões (3 níveis)
+- ✅ Validação de expiração
+- ✅ Cancelamento de convites
+
+#### Melhorias Futuras (Opcionais)
 - ⏳ Notificação quando convite é aceito
 - ⏳ Remover membro da conta
+- ⏳ Alterar role de membro existente
+- ⏳ Histórico de convites aceitos/rejeitados
 
 **Documentação Completa**:
 - `docs/IMPLEMENTATION-SUMMARY-v0.3.0.md` - Resumo executivo completo (380 linhas)
