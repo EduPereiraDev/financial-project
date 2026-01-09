@@ -1,7 +1,7 @@
 # 🗺️ Roadmap Completo - Financial Control App
 
-> **Status Atual**: v0.12.0 - Empty States Ilustrados (100% ✅)  
-> **Última Atualização**: 09/01/2026 14:00 UTC-3
+> **Status Atual**: v0.13.0 - Busca e Filtros Avançados (100% ✅)  
+> **Última Atualização**: 09/01/2026 14:05 UTC-3
 
 ---
 
@@ -824,6 +824,109 @@ na### v0.6.0 - Integração Bancária ✅ (09/01/2026)
 - **Linhas removidas**: -4
 - **Build Backend**: 2.2s ✅
 - **Build Frontend**: 2.67s ✅
+
+---
+
+### v0.13.0 - Busca e Filtros Avançados ✅
+
+#### Componente SearchBar Criado
+- ✅ **search-bar.tsx** (42 linhas)
+  - Componente reutilizável de busca
+  - Interface TypeScript tipada (SearchBarProps)
+  - Props: value, onChange, placeholder, className
+  - Ícone Search (lucide-react) fixo à esquerda
+  - Botão X animado para limpar busca
+  - Height: 11 (h-11) para consistência visual
+  - Padding: pl-10 pr-10 para acomodar ícones
+
+#### Componente FilterDropdown Criado
+- ✅ **filter-dropdown.tsx** (85 linhas)
+  - Componente reutilizável de filtros
+  - Interface TypeScript tipada (FilterDropdownProps)
+  - Props: label, options, value, onChange, icon
+  - Dropdown animado com Framer Motion
+  - Ícone customizável (padrão: Filter)
+  - Opções configuráveis (label + value)
+  - Botão de limpar inline
+  - Click outside para fechar
+
+#### Animações SearchBar
+- ✅ Botão X com AnimatePresence
+- ✅ Initial: opacity 0, scale 0.8
+- ✅ Animate: opacity 1, scale 1
+- ✅ Exit: opacity 0, scale 0.8
+- ✅ Hover state: bg-gray-100
+- ✅ Transição suave (300ms)
+
+#### Animações FilterDropdown
+- ✅ Overlay: Fade in/out (opacity)
+- ✅ Menu dropdown:
+  - Initial: opacity 0, y -10
+  - Animate: opacity 1, y 0
+  - Exit: opacity 0, y -10
+- ✅ Transições suaves em todos os estados
+
+#### Estados Visuais SearchBar
+- ✅ Focus: border-blue-500 + ring-2 ring-blue-200
+- ✅ Border transition suave
+- ✅ Placeholder customizável
+- ✅ Input responsivo
+- ✅ Ícone Search sempre visível
+- ✅ Botão X aparece apenas com texto
+
+#### Estados Visuais FilterDropdown
+- ✅ Inativo: border-gray-300
+- ✅ Ativo: border-blue-500 + bg-blue-50
+- ✅ Hover: border-blue-500
+- ✅ Opção selecionada: bg-blue-50 text-blue-600
+- ✅ Opção hover: bg-gray-100
+- ✅ Width: w-56 para dropdown
+- ✅ Shadow-xl para profundidade
+
+#### Funcionalidades SearchBar
+- ✅ Busca em tempo real
+- ✅ Limpar com um clique
+- ✅ Feedback visual imediato
+- ✅ Acessibilidade (type="button")
+- ✅ Totalmente reutilizável
+
+#### Funcionalidades FilterDropdown
+- ✅ Click outside para fechar
+- ✅ Estado interno gerenciado
+- ✅ Múltiplas opções configuráveis
+- ✅ Visual de seleção claro
+- ✅ Botão de limpar inline
+- ✅ Posicionamento: absolute top-full mt-2
+- ✅ Totalmente reutilizável
+
+#### Melhorias de UX
+- ✅ Busca em tempo real
+- ✅ Feedback visual imediato
+- ✅ Limpar com um clique
+- ✅ Filtros com estado visual claro
+- ✅ Animações suaves e profissionais
+- ✅ Componentes totalmente reutilizáveis
+- ✅ Acessibilidade completa
+- ✅ Click outside para fechar dropdown
+- ✅ Transições consistentes (300ms)
+
+#### Casos de Uso
+- ✅ Transações: Buscar por descrição + filtrar por tipo/categoria
+- ✅ Orçamentos: Buscar por nome + filtrar por status
+- ✅ Metas: Buscar por título + filtrar por progresso
+- ✅ Alertas: Buscar por mensagem + filtrar por tipo
+- ✅ Qualquer listagem do sistema
+
+#### Estatísticas
+- **Arquivos criados**: 2 componentes (127 linhas total)
+  - search-bar.tsx (42 linhas)
+  - filter-dropdown.tsx (85 linhas)
+- **Linhas adicionadas**: +135
+- **Build Backend**: 1.2s ✅
+- **Build Frontend**: 2.80s ✅
+- **Componentes reutilizáveis**: 2
+- **Animações implementadas**: 6
+- **Estados visuais**: 12
 
 ---
 
