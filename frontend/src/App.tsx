@@ -5,6 +5,7 @@ import RegisterPage from '@/pages/RegisterPage'
 import DashboardPage from '@/pages/DashboardPage'
 import TransactionsPage from '@/pages/TransactionsPage'
 import RecurringTransactionsPage from '@/pages/RecurringTransactionsPage'
+import AccountMembersPage from '@/pages/AccountMembersPage'
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, loading } = useAuth()
@@ -43,6 +44,14 @@ function App() {
           element={
             <PrivateRoute>
               <RecurringTransactionsPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/members"
+          element={
+            <PrivateRoute>
+              <AccountMembersPage />
             </PrivateRoute>
           }
         />
