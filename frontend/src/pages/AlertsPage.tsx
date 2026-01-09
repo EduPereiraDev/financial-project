@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { alertService } from '../services/alertService';
 import { Alert, AlertType, alertTypeLabels } from '../types/alert';
+import CreateAlertModal from '../components/CreateAlertModal';
 
 export default function AlertsPage() {
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     loadAlerts();
@@ -57,10 +59,19 @@ export default function AlertsPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Alertas e Notificações</h1>
-        <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+        <button 
+          onClick={() => setIsModalOpen(true)}
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        >
           + Novo Alerta
         </button>
       </div>
+
+      <CreateAlertModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSuccess={loadAlerts}
+      />
 
       {alerts.length === 0 ? (
         <div className="bg-white rounded-lg shadow p-8 text-center">
