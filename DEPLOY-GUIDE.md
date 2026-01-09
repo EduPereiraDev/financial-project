@@ -1,4 +1,4 @@
-# 🚀 Guia de Deploy - Financial Control
+esta# 🚀 Guia de Deploy - Financial Control
 
 ## ✅ Status Atual
 
@@ -34,63 +34,62 @@ DATABASE_URL=Host=aws-0-us-east-1.pooler.supabase.com;Port=6543;Database=postgre
 
 ---
 
-### 2️⃣ Deploy do Backend
+### 2️⃣ Deploy do Backend - Render
 
-**Opções:**
-
-#### Opção A: Railway (RECOMENDADO)
-1. Acesse [Railway](https://railway.app)
-2. **New Project** → **Deploy from GitHub**
-3. Selecione o repositório
+1. Acesse [Render](https://render.com)
+2. **New** → **Web Service**
+3. Conecte seu repositório GitHub
 4. Configure:
+   - **Name**: `financial-control-api`
+   - **Region**: US East (Ohio) ou mais próximo
+   - **Branch**: `main`
    - **Root Directory**: `backend/FinancialControl.Api`
-   - **Start Command**: `dotnet run`
-5. Adicione variáveis de ambiente:
+   - **Runtime**: .NET
+   - **Build Command**: `dotnet publish -c Release -o out`
+   - **Start Command**: `dotnet out/FinancialControl.Api.dll`
+   - **Instance Type**: Free (ou Starter)
+
+5. **Environment Variables** (adicione todas):
    ```
-   DATABASE_URL=<connection-string-supabase>
    ASPNETCORE_ENVIRONMENT=Production
+   ASPNETCORE_URLS=http://0.0.0.0:$PORT
+   ConnectionStrings__DefaultConnection=<sua-connection-string-supabase>
+   JwtSettings__Secret=<seu-secret-32-chars>
+   JwtSettings__Issuer=FinancialControlAPI
+   JwtSettings__Audience=FinancialControlApp
+   JwtSettings__ExpirationInDays=7
+   Cors__AllowedOrigins__0=https://seu-app.vercel.app
+   Cors__AllowedOrigins__1=http://localhost:5173
    ```
-6. Deploy automático! 🚀
 
-#### Opção B: Azure App Service
-1. Crie um App Service (.NET 9)
-2. Configure Connection String nas **Configuration Settings**
-3. Deploy via GitHub Actions ou Visual Studio
-
-#### Opção C: Heroku
-1. Instale Heroku CLI
-2. `heroku create financial-control-api`
-3. Configure buildpack: `heroku buildpacks:set heroku/dotnet`
-4. `git push heroku main`
+6. **Create Web Service** → Deploy automático! 🚀
 
 ---
 
-### 3️⃣ Deploy do Frontend
+### 3️⃣ Deploy do Frontend - Vercel
 
-**Opções:**
-
-#### Opção A: Vercel (RECOMENDADO)
 1. Acesse [Vercel](https://vercel.com)
-2. **Import Project** → Selecione o repositório
-3. Configure:
+2. **Add New** → **Project**
+3. **Import Git Repository** → Selecione seu repositório
+4. Configure:
    - **Framework Preset**: Vite
    - **Root Directory**: `frontend`
    - **Build Command**: `npm run build`
    - **Output Directory**: `dist`
-4. Adicione variável de ambiente:
-   ```
-   VITE_API_URL=https://seu-backend.railway.app
-   ```
-5. Deploy automático! 🚀
+   - **Install Command**: `npm install`
 
-#### Opção B: Netlify
-1. Acesse [Netlify](https://netlify.com)
-2. **Add new site** → **Import from Git**
-3. Configure:
-   - **Base directory**: `frontend`
-   - **Build command**: `npm run build`
-   - **Publish directory**: `frontend/dist`
-4. Deploy!
+5. **Environment Variables**:
+   ```
+   VITE_API_URL=https://seu-backend.onrender.com
+   ```
+   ⚠️ **IMPORTANTE**: Substitua pela URL real do seu backend no Render!
+
+6. **Deploy** → Deploy automático! 🚀
+
+7. **Após o deploy**:
+   - Copie a URL do Vercel (ex: `https://financial-project-indol.vercel.app`)
+   - Volte no Render e adicione essa URL no `Cors__AllowedOrigins__0`
+   - Redeploy do backend no Render
 
 ---
 
@@ -228,7 +227,7 @@ Após o deploy, documente aqui:
 
 ```
 Frontend: https://_____.vercel.app
-Backend: https://_____.railway.app
+Backend: https://_____.onrender.com
 Banco: https://_____.supabase.co
 ```
 
@@ -237,18 +236,23 @@ Banco: https://_____.supabase.co
 ## 🚀 Deploy Rápido (TL;DR)
 
 ```bash
-# 1. Configure Supabase connection string
-# Edite: backend/FinancialControl.Api/appsettings.Production.json
+# 1. Deploy Backend (Render)
+# - New Web Service → Conecte GitHub
+# - Root: backend/FinancialControl.Api
+# - Build: dotnet publish -c Release -o out
+# - Start: dotnet out/FinancialControl.Api.dll
+# - Adicione variáveis de ambiente (Connection String, JWT, CORS)
 
-# 2. Deploy Backend (Railway)
-# - Conecte GitHub
-# - Configure variáveis de ambiente
+# 2. Deploy Frontend (Vercel)
+# - Import Project → Conecte GitHub
+# - Root: frontend
+# - Configure VITE_API_URL com URL do Render
 # - Deploy automático
 
-# 3. Deploy Frontend (Vercel)
-# - Conecte GitHub
-# - Configure VITE_API_URL
-# - Deploy automático
+# 3. Configurar CORS
+# - Copie URL do Vercel
+# - Adicione no Cors__AllowedOrigins__0 do Render
+# - Redeploy backend
 
 # 4. Teste!
 ```
