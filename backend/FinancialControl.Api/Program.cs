@@ -87,6 +87,7 @@ builder.Services.AddScoped<IInvitationService, InvitationService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IAlertService, AlertService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IAlertCheckService, AlertCheckService>();
 
 // Hangfire
 builder.Services.AddHangfire(configuration => configuration
@@ -160,6 +161,12 @@ RecurringJob.AddOrUpdate<IRecurringTransactionService>(
     "process-recurring-transactions",
     service => service.ProcessDueRecurringTransactionsAsync(),
     Cron.Daily(0, 1)); // Runs daily at 00:01 UTC
+
+// Configure recurring job to check alerts every hour
+RecurringJob.AddOrUpdate<IAlertCheckService>(
+    "check-alerts",
+    service => service.CheckAndTriggerAlertsAsync(),
+    Cron.Hourly()); // Runs every hour
 
 try
 {
