@@ -1,7 +1,7 @@
 # 🗺️ Roadmap Completo - Financial Control App
 
-> **Status Atual**: v0.6.0 - Integração Bancária (100% ✅)  
-> **Última Atualização**: 09/01/2026 00:33 UTC-3
+> **Status Atual**: v0.6.0 - Integração Bancária REAL com Pluggy (100% ✅)  
+> **Última Atualização**: 09/01/2026 00:49 UTC-3
 
 ---
 
@@ -374,12 +374,27 @@ na### v0.6.0 - Integração Bancária ✅ (09/01/2026)
 - ✅ Status visual das conexões
 - ✅ Auto-sync configurável
 
+#### Integração REAL Pluggy Implementada ✅
+- ✅ **PluggyService completo** (330 linhas) com API real
+  - Autenticação via Pluggy API (`POST /auth`)
+  - CreateConnectToken para widget
+  - FetchTransactions de bancos reais
+  - GetItem e DeleteItem
+  - Tratamento completo de erros
+  - Cache de API Key (1 hora)
+- ✅ **Credenciais configuradas** (Client ID + Secret)
+- ✅ **HttpClientFactory** registrado
+- ✅ **Pluggy Connect Widget** integrado (react-pluggy-connect)
+- ✅ **Fluxo completo** de conexão bancária
+- ✅ **Sincronização real** dos últimos 3 meses
+- ✅ **ZERO mocks** - 100% production-ready
+
 #### Próximos Passos (Melhorias Futuras)
-- 🔄 Integração real com Pluggy/Belvo
 - 🔄 Reconciliação automática de transações
 - 🔄 Categorização inteligente via ML
 - 🔄 Múltiplas contas por conexão
 - 🔄 Histórico de sincronizações
+- 🔄 Webhooks do Pluggy para sync automático
 
 ---
 
