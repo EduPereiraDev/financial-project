@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
+import { EmptyState } from '@/components/ui/empty-state'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from 'recharts'
 import { dashboardService } from '@/services/dashboardService'
 import { DashboardStats } from '@/types/dashboard'
-import { ArrowUpIcon, ArrowDownIcon, TrendingUpIcon } from 'lucide-react'
+import { ArrowUpIcon, ArrowDownIcon, TrendingUpIcon, BarChart3, PieChart as PieChartIcon, TrendingUp } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { toast } from 'sonner'
 
@@ -219,7 +220,13 @@ export default function DashboardPage() {
                 </BarChart>
               </ResponsiveContainer>
             ) : (
-              <p className="text-center text-gray-500 py-12">Nenhum dado disponível</p>
+              <EmptyState
+                icon={BarChart3}
+                title="Nenhum dado disponível"
+                description="Comece adicionando suas primeiras transações para visualizar o gráfico de receitas e despesas."
+                iconColor="text-blue-500"
+                iconBgColor="bg-blue-50"
+              />
             )}
           </CardContent>
         </Card>
@@ -257,7 +264,13 @@ export default function DashboardPage() {
                 </PieChart>
               </ResponsiveContainer>
             ) : (
-              <p className="text-center text-gray-500 py-12">Nenhuma despesa registrada</p>
+              <EmptyState
+                icon={PieChartIcon}
+                title="Nenhuma despesa registrada"
+                description="Adicione suas despesas para visualizar a distribuição por categoria e entender melhor seus gastos."
+                iconColor="text-purple-500"
+                iconBgColor="bg-purple-50"
+              />
             )}
           </CardContent>
         </Card>
@@ -304,7 +317,13 @@ export default function DashboardPage() {
               </LineChart>
             </ResponsiveContainer>
           ) : (
-            <p className="text-center text-gray-500 py-12">Nenhum dado disponível</p>
+            <EmptyState
+              icon={TrendingUp}
+              title="Nenhum dado disponível"
+              description="Registre suas transações diárias para acompanhar a evolução do seu saldo ao longo do tempo."
+              iconColor="text-green-500"
+              iconBgColor="bg-green-50"
+            />
           )}
         </CardContent>
       </Card>
