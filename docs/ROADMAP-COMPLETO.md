@@ -1,7 +1,7 @@
 # 🗺️ Roadmap Completo - Financial Control App
 
-> **Status Atual**: v0.11.0 - Gráficos Animados com Recharts + Framer Motion (100% ✅)  
-> **Última Atualização**: 09/01/2026 13:56 UTC-3
+> **Status Atual**: v0.12.0 - Empty States Ilustrados (100% ✅)  
+> **Última Atualização**: 09/01/2026 14:00 UTC-3
 
 ---
 
@@ -763,6 +763,67 @@ na### v0.6.0 - Integração Bancária ✅ (09/01/2026)
 - **Linhas removidas**: -23
 - **Build Backend**: 1.7s ✅
 - **Build Frontend**: 2.70s ✅
+
+---
+
+### v0.12.0 - Empty States Ilustrados ✅
+
+#### Componente EmptyState Criado
+- ✅ **empty-state.tsx** (77 linhas)
+  - Componente reutilizável e elegante
+  - Interface TypeScript tipada (EmptyStateProps)
+  - Ícone personalizável (LucideIcon)
+  - Título e descrição customizáveis
+  - Botão de ação opcional
+  - Cores personalizáveis (ícone + background)
+
+#### Animações com Framer Motion
+- ✅ Fade in do container (opacity: 0 → 1, y: 20 → 0)
+- ✅ Scale do ícone (0 → 1) com spring animation
+- ✅ Fade in sequencial (título, descrição, botão)
+- ✅ Delays progressivos (0.2s, 0.3s, 0.4s, 0.5s)
+- ✅ Transições suaves (duration: 0.5s)
+
+#### Estrutura Visual
+- ✅ Ícone em círculo colorido (w-16 h-16, p-6)
+- ✅ StrokeWidth: 1.5 para ícones mais suaves
+- ✅ Título: text-xl font-semibold text-gray-900
+- ✅ Descrição: text-gray-600 max-w-md
+- ✅ Botão com gradiente blue-purple
+- ✅ Padding responsivo (py-12 px-4)
+
+#### Empty States Implementados no Dashboard
+- ✅ **BarChart - Receitas vs Despesas**
+  - Ícone: BarChart3
+  - Cor: text-blue-500 / bg-blue-50
+  - Título: "Nenhum dado disponível"
+  - Descrição: Orientação para adicionar transações
+- ✅ **PieChart - Gastos por Categoria**
+  - Ícone: PieChartIcon
+  - Cor: text-purple-500 / bg-purple-50
+  - Título: "Nenhuma despesa registrada"
+  - Descrição: Orientação sobre distribuição por categoria
+- ✅ **LineChart - Evolução do Saldo**
+  - Ícone: TrendingUp
+  - Cor: text-green-500 / bg-green-50
+  - Título: "Nenhum dado disponível"
+  - Descrição: Orientação sobre evolução do saldo
+
+#### Melhorias de UX
+- ✅ Visual atraente e profissional
+- ✅ Orientação clara para o usuário
+- ✅ Feedback visual imediato
+- ✅ Animações suaves e elegantes
+- ✅ Cores contextuais por tipo de dado
+- ✅ Mensagens descritivas e úteis
+
+#### Estatísticas
+- **Arquivos criados**: empty-state.tsx (77 linhas)
+- **Arquivos modificados**: DashboardPage.tsx
+- **Linhas adicionadas**: +101
+- **Linhas removidas**: -4
+- **Build Backend**: 2.2s ✅
+- **Build Frontend**: 2.67s ✅
 
 ---
 
