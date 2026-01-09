@@ -19,10 +19,12 @@ public interface IInvitationService
 public class InvitationService : IInvitationService
 {
     private readonly AppDbContext _context;
+    private readonly IEmailService _emailService;
 
-    public InvitationService(AppDbContext context)
+    public InvitationService(AppDbContext context, IEmailService emailService)
     {
         _context = context;
+        _emailService = emailService;
     }
 
     public async Task<InvitationDto> CreateInvitationAsync(Guid userId, CreateInvitationRequest request)
@@ -74,9 +76,26 @@ public class InvitationService : IInvitationService
         _context.Invitations.Add(invitation);
         await _context.SaveChangesAsync();
 
-        // Retornar DTO
+        // Enviar email de convite
         var account = await _context.Accounts.FindAsync(request.AccountId);
         var invitedByUser = await _context.Users.FindAsync(userId);
+        
+        try
+        {
+            await _emailService.SendInvitationEmailAsync(
+                invitation.InvitedEmail,
+                invitation.InvitedEmail.Split('@')[0], // Nome temporário do email
+                invitedByUser!.Name,
+                account!.Name,
+                invitation.Token,
+                invitation.Role.ToString()
+            );
+        }
+        catch (Exception ex)
+        {
+            // Log erro mas não falha a criação do convite
+            Console.WriteLine($"Erro ao enviar email: {ex.Message}");
+        }
 
         return new InvitationDto(
             invitation.Id,
