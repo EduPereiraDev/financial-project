@@ -1,7 +1,7 @@
 # 🗺️ Roadmap Completo - Financial Control App
 
-> **Status Atual**: v0.8.0 - Sistema de Orçamentos (100% ✅)  
-> **Última Atualização**: 09/01/2026 13:33 UTC-3
+> **Status Atual**: v0.9.0 - Sistema de Metas Financeiras (100% ✅)  
+> **Última Atualização**: 09/01/2026 13:42 UTC-3
 
 ---
 
@@ -524,6 +524,91 @@ na### v0.6.0 - Integração Bancária ✅ (09/01/2026)
 - **Frontend**: 395 linhas (4 arquivos)
 - **Build Backend**: 1.1s ✅
 - **Build Frontend**: 2.44s ✅
+
+---
+
+### v0.9.0 - Sistema de Metas Financeiras ✅
+
+#### Backend - API de Metas
+- ✅ **Goal Model** (49 linhas)
+  - Campos: UserId, Name, Description, TargetAmount, CurrentAmount, TargetDate
+  - Enums: GoalStatus (Active, Completed, Cancelled, Paused)
+  - Enums: GoalPriority (Low, Medium, High, Critical)
+  - GoalContribution para tracking de contribuições
+  - Navigation properties para User e Contributions
+- ✅ **Migration AddGoals** aplicada
+  - Tabelas Goals e GoalContributions criadas
+  - Índices: UserId, Status, TargetDate, GoalId, ContributedAt
+- ✅ **GoalService** (271 linhas)
+  - GetByIdAsync, GetAllAsync, GetSummaryAsync
+  - CreateAsync, UpdateAsync, DeleteAsync
+  - AddContributionAsync (atualiza currentAmount automaticamente)
+  - GetContributionsAsync (histórico completo)
+  - MapToDto com cálculos: % completo, valor restante, dias restantes, contribuição mensal necessária
+  - Auto-complete quando meta atingida
+- ✅ **GoalController** (176 linhas)
+  - GET /api/goal/{id}
+  - GET /api/goal/summary
+  - GET /api/goal?status
+  - POST /api/goal
+  - PUT /api/goal/{id}
+  - DELETE /api/goal/{id}
+  - POST /api/goal/{id}/contributions
+  - GET /api/goal/{id}/contributions
+  - Autenticação JWT obrigatória
+- ✅ **GoalDtos** (69 linhas)
+  - GoalDto, CreateGoalDto, UpdateGoalDto
+  - GoalContributionDto, CreateContributionDto
+  - GoalSummaryDto com estatísticas agregadas
+
+#### Frontend - UI de Metas
+- ✅ **Goal Types** (61 linhas)
+- ✅ **GoalService** (45 linhas)
+  - getAll, getById, getSummary
+  - create, update, delete
+  - addContribution, getContributions
+- ✅ **GoalsPage** (402 linhas)
+  - 4 Cards de resumo:
+    * Total de Metas (azul) + ativas
+    * Valor Total Alvo (roxo)
+    * Valor Economizado (verde)
+    * Progresso Geral (laranja) + concluídas
+  - Lista de metas com:
+    * Nome, descrição e prioridade (colorida)
+    * Badge de status "✓ Concluída" (verde)
+    * Grid: progresso, economizado, faltam, prazo
+    * Barra de progresso colorida (laranja/amarelo/azul/verde)
+    * Meta e data alvo
+    * 💡 Sugestão de economia mensal necessária
+    * Botões: adicionar contribuição ($), excluir
+  - Dialog para criar meta
+  - Dialog para adicionar contribuição
+  - Estado vazio com call-to-action
+- ✅ **Textarea Component** (24 linhas)
+- ✅ **Rota /goals** adicionada no App.tsx
+
+#### Funcionalidades Implementadas
+- ✅ Criar meta financeira (nome, descrição, valor, data, prioridade)
+- ✅ Editar meta (campos opcionais)
+- ✅ Excluir meta
+- ✅ Adicionar contribuições para metas
+- ✅ Histórico completo de contribuições
+- ✅ Cálculo automático de progresso (%)
+- ✅ Cálculo de valor restante
+- ✅ Cálculo de dias restantes
+- ✅ Sugestão de economia mensal necessária
+- ✅ Auto-complete quando meta atingida
+- ✅ Resumo consolidado de todas as metas
+- ✅ Filtro por status (Active, Completed, etc)
+- ✅ Prioridades visuais (Baixa/Média/Alta/Crítica)
+- ✅ Interface responsiva
+
+#### Estatísticas
+- **Total**: 1.097 linhas de código
+- **Backend**: 565 linhas (4 arquivos)
+- **Frontend**: 532 linhas (4 arquivos)
+- **Build Backend**: 1.1s ✅
+- **Build Frontend**: 2.48s ✅
 
 ---
 
