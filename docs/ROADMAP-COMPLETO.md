@@ -163,6 +163,56 @@
 **Documentação Completa**:
 - `docs/IMPLEMENTATION-SUMMARY-v0.3.0.md` - Resumo executivo completo (380 linhas)
 
+### v0.4.0 - Alertas e Notificações ⏳ **EM PROGRESSO - Fase 1**
+
+#### Backend Implementado - Fase 1 (09/01/2026) ✅
+- ✅ Modelo `Alert` com 7 tipos de alertas
+  - MonthlySpendingLimit (Gastos mensais acima do limite)
+  - LowBalance (Saldo baixo)
+  - GoalDeadlineApproaching (Meta próxima do prazo)
+  - RecurringTransactionProcessed (Transação recorrente processada)
+  - InvitationAccepted (Convite aceito)
+  - UnusualSpending (Gasto incomum)
+  - CategoryBudgetExceeded (Orçamento de categoria excedido)
+- ✅ Modelo `Notification` com 5 tipos (Info, Warning, Error, Success, Alert)
+- ✅ Migration `AddAlertsAndNotifications` aplicada no Supabase
+- ✅ Tabela `Alerts` criada (5 índices)
+- ✅ Tabela `Notifications` criada (3 índices)
+- ✅ Configuração de relacionamentos no AppDbContext
+- ✅ Build bem-sucedido (1.0s)
+- ✅ Commit e push para produção
+
+#### Pendente - Fase 2 (Backend)
+- ⏳ DTOs para Alert e Notification
+- ⏳ `NotificationService` (criar, listar, marcar como lida)
+- ⏳ `AlertService` (CRUD + verificar alertas)
+- ⏳ `NotificationsController` (5 endpoints REST)
+- ⏳ `AlertsController` (6 endpoints REST)
+- ⏳ Job Hangfire para verificar alertas automaticamente
+
+#### Pendente - Fase 3 (Frontend)
+- ⏳ Tipos TypeScript para Alert e Notification
+- ⏳ Services (alertService, notificationService)
+- ⏳ Centro de notificações (dropdown no header)
+- ⏳ Badge com contador de não lidas
+- ⏳ Página de configuração de alertas
+- ⏳ Toast notifications em tempo real
+
+#### Estatísticas da Fase 1
+- **Arquivos criados**: 4
+- **Arquivos modificados**: 2
+- **Linhas de código**: ~200
+- **Commits**: 1
+- **Tempo de desenvolvimento**: ~30 min
+- **Build status**: ✅ 100% sucesso
+- **Deploy status**: ⏳ Em andamento
+
+#### Status Atual
+- **Backend Fase 1**: ✅ 30% completo (Modelos + DB)
+- **Backend Fase 2**: ⏳ 0% (Services + Controllers)
+- **Frontend Fase 3**: ⏳ 0% (UI completa)
+- **Progresso Total v0.4.0**: 30%
+
 ---
 
 ## 🚀 Features Prioritárias (v0.2.0 - v0.5.0)
