@@ -15,6 +15,7 @@ public class AppDbContext : DbContext
     public DbSet<Transaction> Transactions { get; set; }
     public DbSet<Category> Categories { get; set; }
     public DbSet<RecurringTransaction> RecurringTransactions { get; set; }
+    public DbSet<Invitation> Invitations { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -124,8 +125,33 @@ public class AppDbContext : DbContext
                 .OnDelete(DeleteBehavior.Restrict);
 
             entity.HasIndex(e => e.AccountId);
-            entity.HasIndex(e => e.NextExecutionDate);
+            entity.HasIndex(rt => rt.NextExecutionDate);
             entity.HasIndex(e => e.IsActive);
+        });
+
+        // Invitation
+        modelBuilder.Entity<Invitation>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.InvitedEmail).IsRequired().HasMaxLength(255);
+            entity.Property(e => e.Token).IsRequired().HasMaxLength(100);
+            entity.Property(e => e.Status).IsRequired();
+            entity.Property(e => e.Role).IsRequired();
+
+            entity.HasOne(e => e.Account)
+                .WithMany()
+                .HasForeignKey(e => e.AccountId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.InvitedByUser)
+                .WithMany()
+                .HasForeignKey(e => e.InvitedByUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasIndex(e => e.Token).IsUnique();
+            entity.HasIndex(e => e.InvitedEmail);
+            entity.HasIndex(e => e.Status);
+            entity.HasIndex(e => e.ExpiresAt);
         });
     }
 }
