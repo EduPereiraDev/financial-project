@@ -1,7 +1,7 @@
 # 🗺️ Roadmap Completo - Financial Control App
 
-> **Status Atual**: v0.10.0 - Melhorias de UI/UX (100% ✅)  
-> **Última Atualização**: 09/01/2026 13:53 UTC-3
+> **Status Atual**: v0.11.0 - Gráficos Animados com Recharts + Framer Motion (100% ✅)  
+> **Última Atualização**: 09/01/2026 13:56 UTC-3
 
 ---
 
@@ -687,6 +687,82 @@ na### v0.6.0 - Integração Bancária ✅ (09/01/2026)
 - **Skeleton.tsx**: 15 linhas
 - **Build Backend**: 2.9s ✅
 - **Build Frontend**: 2.74s ✅
+
+---
+
+### v0.11.0 - Gráficos Animados com Recharts + Framer Motion ✅
+
+#### Melhorias no DashboardPage
+- ✅ **Animações com Framer Motion**
+  - Fade in do container principal (duration: 0.5s)
+  - Animação de entrada dos cards (stagger: 0.1s cada)
+  - Hover effects: scale(1.02) + lift(y: -5)
+  - Transições suaves (300ms)
+
+#### Cards Interativos (3 cards principais)
+- ✅ **Receitas do Mês**
+  - Gradiente verde no topo (green-500 to green-600)
+  - Valor em destaque (text-3xl)
+  - Indicador de variação vs mês anterior
+  - Border-0 + Shadow-lg com hover:shadow-xl
+- ✅ **Despesas do Mês**
+  - Gradiente vermelho no topo (red-500 to red-600)
+  - Valor em destaque (text-3xl)
+  - Indicador de variação vs mês anterior
+  - Border-0 + Shadow-lg com hover:shadow-xl
+- ✅ **Saldo do Mês**
+  - Gradiente dinâmico (azul se positivo, vermelho se negativo)
+  - Valor em destaque (text-3xl)
+  - Status (Positivo/Negativo)
+  - Border-0 + Shadow-lg com hover:shadow-xl
+
+#### Loading States Melhorados
+- ✅ Skeletons animados com pulse
+- ✅ 3 cards skeleton
+- ✅ 2 gráficos skeleton
+- ✅ Melhor UX durante carregamento
+
+#### Gráficos com Animações
+- ✅ **BarChart - Receitas vs Despesas**
+  - Cores: verde (#10b981) e vermelho (#ef4444)
+  - Barras com animação de entrada
+  - Tooltip customizado
+  - CartesianGrid suave
+- ✅ **PieChart - Gastos por Categoria**
+  - Cores dinâmicas por categoria
+  - Labels com percentuais
+  - Tooltip customizado
+  - Animação de entrada
+- ✅ **LineChart - Evolução do Saldo**
+  - Stroke azul (#3b82f6) com width 3
+  - Dots animados (r: 4, activeDot: 6)
+  - AnimationDuration: 1000ms
+  - Tooltip customizado
+  - CartesianGrid stroke #e5e7eb
+
+#### Tooltips Customizados
+- ✅ Background: white
+- ✅ Border: 1px solid #e5e7eb
+- ✅ Border-radius: 8px
+- ✅ Box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1)
+- ✅ Formatação de moeda pt-BR
+
+#### Sistema de Toasts
+- ✅ Toast de sucesso ao carregar dashboard
+- ✅ Toast de erro em caso de falha
+- ✅ Feedback visual imediato
+
+#### Responsividade
+- ✅ Grid adaptativo: md:grid-cols-2 lg:grid-cols-3
+- ✅ Gráficos responsivos com ResponsiveContainer
+- ✅ Altura fixa: 300px para todos os gráficos
+
+#### Estatísticas
+- **Arquivo modificado**: DashboardPage.tsx (317 linhas)
+- **Linhas adicionadas**: +110
+- **Linhas removidas**: -23
+- **Build Backend**: 1.7s ✅
+- **Build Frontend**: 2.70s ✅
 
 ---
 
