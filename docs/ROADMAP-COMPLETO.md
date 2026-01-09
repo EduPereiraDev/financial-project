@@ -1,7 +1,7 @@
 # 🗺️ Roadmap Completo - Financial Control App
 
-> **Status Atual**: v0.6.0 - Integração Bancária REAL com Pluggy (100% ✅)  
-> **Última Atualização**: 09/01/2026 00:49 UTC-3
+> **Status Atual**: v0.7.0 - Dashboard com Gráficos Interativos (100% ✅)  
+> **Última Atualização**: 09/01/2026 13:23 UTC-3
 
 ---
 
@@ -395,6 +395,59 @@ na### v0.6.0 - Integração Bancária ✅ (09/01/2026)
 - 🔄 Múltiplas contas por conexão
 - 🔄 Histórico de sincronizações
 - 🔄 Webhooks do Pluggy para sync automático
+
+---
+
+### v0.7.0 - Dashboard com Gráficos Interativos ✅
+
+#### Backend - API de Estatísticas
+- ✅ **DashboardService** (161 linhas)
+  - GetDashboardStatsAsync com análise completa
+  - Estatísticas mês atual vs mês anterior
+  - Dados mensais (últimos 6 meses)
+  - Gastos por categoria com cores personalizadas
+  - Evolução diária do saldo (30 dias)
+  - Suporte a Guid userId
+  - Tratamento completo de erros
+- ✅ **DashboardController** (42 linhas)
+  - Endpoint GET /api/dashboard/stats?months=6
+  - Autenticação JWT obrigatória
+  - Logs de erro
+- ✅ **DashboardDtos** (33 linhas - 4 DTOs)
+  - DashboardStatsDto, MonthlyDataDto
+  - CategoryExpenseDto, DailyBalanceDto
+
+#### Frontend - Gráficos com Recharts
+- ✅ **DashboardPage** (227 linhas)
+  - 3 Cards de resumo com comparação mensal
+  - Gráfico de Barras: Receitas vs Despesas (6 meses)
+  - Gráfico de Pizza: Gastos por Categoria
+  - Gráfico de Linha: Evolução do Saldo (30 dias)
+  - Loading e error states
+  - Formatação pt-BR (R$)
+  - Ícones Lucide (ArrowUp, ArrowDown, TrendingUp)
+- ✅ **DashboardService** (9 linhas)
+- ✅ **Tipos TypeScript** (27 linhas)
+
+#### Funcionalidades Implementadas
+- ✅ Análise financeira completa
+- ✅ Comparação mês atual vs anterior (%)
+- ✅ Visualização de tendências
+- ✅ Categorização de gastos com cores
+- ✅ Evolução temporal do saldo
+- ✅ Interface responsiva (mobile/tablet/desktop)
+- ✅ Tooltips interativos
+- ✅ Legendas clicáveis
+
+#### Pacotes Adicionados
+- recharts (43 pacotes)
+
+#### Estatísticas
+- **Total**: 499 linhas de código
+- **Backend**: 236 linhas (3 arquivos)
+- **Frontend**: 263 linhas (3 arquivos)
+- **Build Backend**: 1.1s ✅
+- **Build Frontend**: 2.47s ✅
 
 ---
 
