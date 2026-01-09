@@ -1,7 +1,7 @@
 # 🗺️ Roadmap Completo - Financial Control App
 
-> **Status Atual**: v0.7.0 - Dashboard com Gráficos Interativos (100% ✅)  
-> **Última Atualização**: 09/01/2026 13:23 UTC-3
+> **Status Atual**: v0.8.0 - Sistema de Orçamentos (100% ✅)  
+> **Última Atualização**: 09/01/2026 13:33 UTC-3
 
 ---
 
@@ -448,6 +448,82 @@ na### v0.6.0 - Integração Bancária ✅ (09/01/2026)
 - **Frontend**: 263 linhas (3 arquivos)
 - **Build Backend**: 1.1s ✅
 - **Build Frontend**: 2.47s ✅
+
+---
+
+### v0.8.0 - Sistema de Orçamentos ✅
+
+#### Backend - API de Orçamentos
+- ✅ **Budget Model** (25 linhas)
+  - Campos: UserId, CategoryId, Amount, Period, Month, Year
+  - Enum BudgetPeriod (Monthly, Quarterly, Yearly)
+  - Navigation properties para User e Category
+- ✅ **Migration AddBudgets** aplicada
+  - Tabela Budgets criada no PostgreSQL
+  - Índices: UserId, CategoryId
+  - Unique constraint: UserId + CategoryId + Month + Year
+- ✅ **BudgetService** (216 linhas)
+  - GetByIdAsync, GetAllAsync, GetBudgetSummaryAsync
+  - CreateAsync com validação de duplicatas
+  - UpdateAsync, DeleteAsync
+  - CalculateSpentAsync (calcula gastos por categoria/período)
+  - MapToDto com cálculo de % usado e saldo restante
+- ✅ **BudgetController** (148 linhas)
+  - GET /api/budget/{id}
+  - GET /api/budget/summary?month&year
+  - GET /api/budget?month&year
+  - POST /api/budget
+  - PUT /api/budget/{id}
+  - DELETE /api/budget/{id}
+  - Autenticação JWT obrigatória
+- ✅ **BudgetDtos** (44 linhas)
+  - BudgetDto, CreateBudgetDto, UpdateBudgetDto
+  - BudgetSummaryDto com estatísticas agregadas
+
+#### Frontend - UI de Orçamentos
+- ✅ **Budget Types** (38 linhas)
+- ✅ **BudgetService** (39 linhas)
+  - getAll, getById, getSummary
+  - create, update, delete
+- ✅ **BudgetsPage** (292 linhas)
+  - 3 Cards de resumo:
+    * Orçamento Total (azul) + contador de categorias
+    * Total Gasto (vermelho) + % do orçamento
+    * Saldo Restante (verde/vermelho) + categorias acima do limite
+  - Lista de orçamentos por categoria:
+    * Cor da categoria (indicador visual)
+    * Barra de progresso colorida (verde/amarelo/vermelho)
+    * % de uso do orçamento
+    * Valor gasto vs orçamento
+    * Saldo restante
+    * Botões de editar e excluir
+  - Dialog para criar/editar orçamento
+  - Estado vazio com call-to-action
+- ✅ **Progress Component** (26 linhas)
+  - Componente Radix UI customizado
+- ✅ **Rota /budgets** adicionada no App.tsx
+
+#### Funcionalidades Implementadas
+- ✅ Criar orçamento por categoria e período
+- ✅ Editar valor do orçamento
+- ✅ Excluir orçamento
+- ✅ Calcular gastos em tempo real
+- ✅ Comparar gasto vs orçamento
+- ✅ Alertas visuais (cores) quando próximo/acima do limite
+- ✅ Validação: não permite orçamentos duplicados
+- ✅ Suporte a múltiplos períodos (mensal, trimestral, anual)
+- ✅ Resumo consolidado de todos os orçamentos
+- ✅ Contador de categorias acima do limite
+
+#### Pacotes Adicionados
+- @radix-ui/react-progress
+
+#### Estatísticas
+- **Total**: 828 linhas de código
+- **Backend**: 433 linhas (4 arquivos)
+- **Frontend**: 395 linhas (4 arquivos)
+- **Build Backend**: 1.1s ✅
+- **Build Frontend**: 2.44s ✅
 
 ---
 
