@@ -50,6 +50,12 @@ export default function Layout({ children }: LayoutProps) {
                   🔔 Alertas
                 </Link>
                 <Link
+                  to="/banking"
+                  className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium"
+                >
+                  🏦 Banking
+                </Link>
+                <Link
                   to="/members"
                   className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium"
                 >

@@ -9,6 +9,7 @@ import RecurringTransactionsPage from '@/pages/RecurringTransactionsPage'
 import AccountMembersPage from '@/pages/AccountMembersPage'
 import AcceptInvitationPage from '@/pages/AcceptInvitationPage'
 import AlertsPage from '@/pages/AlertsPage'
+import BankingPage from '@/pages/BankingPage'
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, loading } = useAuth()
@@ -71,6 +72,14 @@ function App() {
           element={
             <PrivateRoute>
               <AlertsPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/banking"
+          element={
+            <PrivateRoute>
+              <BankingPage />
             </PrivateRoute>
           }
         />
