@@ -203,12 +203,37 @@
 - ✅ Build bem-sucedido (1.0s)
 - ✅ Commit e push para produção
 
-#### Pendente - Fase 3 (Backend)
-- ⏳ `NotificationsController` (5 endpoints REST)
-- ⏳ `AlertsController` (6 endpoints REST)
-- ⏳ Job Hangfire para verificar alertas automaticamente
+#### Backend Implementado - Fase 3 (09/01/2026) ✅
+- ✅ `NotificationsController` com 5 endpoints (115 linhas)
+  - GET /api/notifications (listar com filtro unread)
+  - GET /api/notifications/unread-count
+  - PUT /api/notifications/{id}/read
+  - PUT /api/notifications/read-all
+  - DELETE /api/notifications/{id}
+- ✅ `AlertsController` com 6 endpoints (140 linhas)
+  - POST /api/alerts (criar)
+  - GET /api/alerts/account/{accountId} (listar)
+  - GET /api/alerts/{id} (buscar)
+  - PUT /api/alerts/{id} (atualizar)
+  - DELETE /api/alerts/{id} (excluir)
+  - PUT /api/alerts/{id}/toggle (ativar/desativar)
+- ✅ Build bem-sucedido (1.0s)
+- ✅ Commit e push para produção
 
-#### Pendente - Fase 3 (Frontend)
+#### Backend Implementado - Fase 4 (09/01/2026) ✅
+- ✅ `AlertCheckService` com verificação automática (135 linhas)
+- ✅ Verificação de 3 tipos de alertas:
+  - MonthlySpendingLimit (gastos mensais acima do limite)
+  - LowBalance (saldo baixo na conta)
+  - CategoryBudgetExceeded (orçamento de categoria excedido)
+- ✅ Job Hangfire configurado (executa a cada hora)
+- ✅ Prevenção de notificações duplicadas (24h)
+- ✅ Atualização de LastTriggeredAt
+- ✅ Criação automática de notificações
+- ✅ Build bem-sucedido (1.0s)
+- ✅ Commit e push para produção
+
+#### Pendente - Frontend
 - ⏳ Tipos TypeScript para Alert e Notification
 - ⏳ Services (alertService, notificationService)
 - ⏳ Centro de notificações (dropdown no header)
@@ -216,21 +241,29 @@
 - ⏳ Página de configuração de alertas
 - ⏳ Toast notifications em tempo real
 
-#### Estatísticas da Fase 1 + Fase 2
-- **Arquivos criados**: 8 (4 Fase 1 + 4 Fase 2)
-- **Arquivos modificados**: 3
-- **Linhas de código**: ~573 (200 Fase 1 + 373 Fase 2)
-- **Commits**: 2
-- **Tempo de desenvolvimento**: ~1.5 horas
+#### Estatísticas Finais Backend (Fases 1-4)
+- **Arquivos criados**: 11 (Modelos, DTOs, Services, Controllers)
+- **Arquivos modificados**: 4
+- **Linhas de código**: ~1.200
+  - Fase 1: ~200 (Modelos + Migration)
+  - Fase 2: ~373 (DTOs + Services)
+  - Fase 3: ~255 (Controllers)
+  - Fase 4: ~135 (AlertCheckService + Job)
+- **Endpoints REST**: 11 (5 Notifications + 6 Alerts)
+- **Jobs Hangfire**: 2 (Recorrências + Alertas)
+- **Commits**: 4
+- **Tempo de desenvolvimento**: ~2.5 horas
 - **Build status**: ✅ 100% sucesso
 - **Deploy status**: ⏳ Em andamento
 
 #### Status Atual
 - **Backend Fase 1**: ✅ 100% completo (Modelos + DB)
 - **Backend Fase 2**: ✅ 100% completo (DTOs + Services)
-- **Backend Fase 3**: ⏳ 0% (Controllers + Job)
+- **Backend Fase 3**: ✅ 100% completo (Controllers)
+- **Backend Fase 4**: ✅ 100% completo (Job Hangfire)
+- **Backend Total**: ✅ 100% COMPLETO
 - **Frontend**: ⏳ 0% (UI completa)
-- **Progresso Total v0.4.0**: 60%
+- **Progresso Total v0.4.0**: 80%
 
 ---
 
