@@ -21,15 +21,19 @@ export function useAuth() {
     setLoading(false)
   }, [])
 
-  const login = (token: string, userData: User) => {
+  const login = (token: string, userData: User, accountId?: string) => {
     localStorage.setItem('token', token)
     localStorage.setItem('user', JSON.stringify(userData))
+    if (accountId) {
+      localStorage.setItem('accountId', accountId)
+    }
     setUser(userData)
   }
 
   const logout = () => {
     localStorage.removeItem('token')
     localStorage.removeItem('user')
+    localStorage.removeItem('accountId')
     setUser(null)
   }
 

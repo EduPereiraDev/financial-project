@@ -38,13 +38,18 @@ self.addEventListener('activate', (event) => {
 
 // Fetch Strategy: Network First, fallback to Cache
 self.addEventListener('fetch', (event) => {
+  // Só cachear requisições GET
+  if (event.request.method !== 'GET') {
+    return event.respondWith(fetch(event.request))
+  }
+
   event.respondWith(
     fetch(event.request)
       .then((response) => {
         // Clone response
         const responseToCache = response.clone()
         
-        // Cache successful responses
+        // Cache successful responses (apenas GET)
         if (response.status === 200) {
           caches.open(CACHE_NAME).then((cache) => {
             cache.put(event.request, responseToCache)

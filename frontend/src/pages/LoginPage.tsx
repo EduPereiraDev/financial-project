@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { authService } from '@/services/api'
 import { useAuth } from '@/hooks/useAuth'
+import api from '@/services/api'
 
 export default function LoginPage() {
   const navigate = useNavigate()
@@ -22,7 +23,23 @@ export default function LoginPage() {
 
     try {
       const response = await authService.login({ email, password })
-      login(response.token, response.user)
+      
+      // Buscar accounts do usuário
+      try {
+        const accountsResponse = await api.get('/accounts')
+        const accounts = accountsResponse.data
+        
+        // Salvar o primeiro account (ou criar um se não existir)
+        if (accounts && accounts.length > 0) {
+          login(response.token, response.user, accounts[0].id)
+        } else {
+          login(response.token, response.user)
+        }
+      } catch (accountErr) {
+        console.error('Erro ao buscar accounts:', accountErr)
+        login(response.token, response.user)
+      }
+      
       navigate('/dashboard')
     } catch (err: any) {
       setError(err.response?.data?.message || 'Erro ao fazer login')
