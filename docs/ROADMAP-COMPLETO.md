@@ -282,7 +282,7 @@
 
 ---
 
-### v0.6.0 - Integração Bancária ✅ (09/01/2026)
+na### v0.6.0 - Integração Bancária ✅ (09/01/2026)
 
 #### Backend Implementado (09/01/2026) ✅
 

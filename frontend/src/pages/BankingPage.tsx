@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { PluggyConnect } from 'react-pluggy-connect';
 import { bankingService } from '../services/bankingService';
 import { BankConnection, BankTransaction, bankConnectionStatusLabels, bankConnectionStatusColors, BankConnectionStatus } from '../types/banking';
 
@@ -7,6 +8,8 @@ export default function BankingPage() {
   const [pendingTransactions, setPendingTransactions] = useState<BankTransaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [syncing, setSyncing] = useState<string | null>(null);
+  const [connectToken, setConnectToken] = useState<string | null>(null);
+  const [showConnectWidget, setShowConnectWidget] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -26,6 +29,50 @@ export default function BankingPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleOpenConnect = async () => {
+    try {
+      const token = await bankingService.createConnectToken();
+      setConnectToken(token);
+      setShowConnectWidget(true);
+    } catch (error) {
+      console.error('Erro ao criar Connect Token:', error);
+      alert('Erro ao iniciar conexão bancária. Verifique as configurações do Pluggy.');
+    }
+  };
+
+  const handleConnectSuccess = async (itemData: any) => {
+    try {
+      const accountId = localStorage.getItem('accountId');
+      if (!accountId) {
+        alert('Conta não encontrada');
+        return;
+      }
+
+      await bankingService.createConnection({
+        accountId,
+        bankName: itemData.connector.name,
+        bankCode: itemData.connector.id.toString(),
+        institutionId: itemData.connector.id.toString(),
+        itemId: itemData.item.id,
+      });
+
+      setShowConnectWidget(false);
+      setConnectToken(null);
+      await loadData();
+      alert('Banco conectado com sucesso!');
+    } catch (error) {
+      console.error('Erro ao salvar conexão:', error);
+      alert('Erro ao salvar conexão bancária');
+    }
+  };
+
+  const handleConnectError = (error: any) => {
+    console.error('Erro no Pluggy Connect:', error);
+    setShowConnectWidget(false);
+    setConnectToken(null);
+    alert('Erro ao conectar com o banco. Tente novamente.');
   };
 
   const handleSync = async (connectionId: string) => {
@@ -75,9 +122,25 @@ export default function BankingPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      {/* Pluggy Connect Widget */}
+      {showConnectWidget && connectToken && (
+        <PluggyConnect
+          connectToken={connectToken}
+          onSuccess={handleConnectSuccess}
+          onError={handleConnectError}
+          onClose={() => {
+            setShowConnectWidget(false);
+            setConnectToken(null);
+          }}
+        />
+      )}
+
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">🏦 Integração Bancária</h1>
-        <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+        <button 
+          onClick={handleOpenConnect}
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        >
           + Conectar Banco
         </button>
       </div>

@@ -194,4 +194,19 @@ public class BankingController : ControllerBase
             return StatusCode(500, new { message = "Erro ao ignorar transação", error = ex.Message });
         }
     }
+
+    [HttpPost("connect-token")]
+    public async Task<ActionResult<object>> CreateConnectToken()
+    {
+        try
+        {
+            var userId = GetUserId();
+            var token = await _bankingService.CreateConnectTokenAsync(userId);
+            return Ok(new { accessToken = token });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = "Erro ao criar Connect Token", error = ex.Message });
+        }
+    }
 }

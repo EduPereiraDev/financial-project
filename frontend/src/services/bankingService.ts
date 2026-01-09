@@ -2,6 +2,11 @@ import api from './api';
 import { BankConnection, BankTransaction, CreateBankConnectionRequest, SyncResult } from '../types/banking';
 
 export const bankingService = {
+  createConnectToken: async (): Promise<string> => {
+    const response = await api.post('/banking/connect-token');
+    return response.data.accessToken;
+  },
+
   getConnections: async (): Promise<BankConnection[]> => {
     const response = await api.get('/banking/connections');
     return response.data;

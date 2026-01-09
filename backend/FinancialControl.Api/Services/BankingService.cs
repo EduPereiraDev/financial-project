@@ -16,15 +16,20 @@ public interface IBankingService
     Task<List<BankTransactionListDto>> GetPendingTransactionsAsync(Guid userId);
     Task<bool> ImportTransactionAsync(Guid userId, ImportBankTransactionRequest request);
     Task<bool> IgnoreTransactionAsync(Guid userId, Guid bankTransactionId);
+    Task<string> CreateConnectTokenAsync(Guid userId);
 }
 
 public class BankingService : IBankingService
 {
     private readonly AppDbContext _context;
+    private readonly IPluggyService _pluggyService;
+    private readonly ILogger<BankingService> _logger;
 
-    public BankingService(AppDbContext context)
+    public BankingService(AppDbContext context, IPluggyService pluggyService, ILogger<BankingService> logger)
     {
         _context = context;
+        _pluggyService = pluggyService;
+        _logger = logger;
     }
 
     public async Task<BankConnectionDto> CreateConnectionAsync(Guid userId, CreateBankConnectionRequest request)
@@ -118,18 +123,18 @@ public class BankingService : IBankingService
             connection.Status = BankConnectionStatus.Syncing;
             await _context.SaveChangesAsync();
 
-            // Aqui seria a integração real com Pluggy/Belvo
-            // Por enquanto, vamos simular com dados mock
-            var mockTransactions = GenerateMockTransactions(connectionId);
+            // Buscar transações reais do Pluggy
+            var pluggyTransactions = await _pluggyService.FetchTransactionsAsync(connection.ItemId, connection.LastSyncAt);
             
             var newTransactions = 0;
-            foreach (var transaction in mockTransactions)
+            foreach (var transaction in pluggyTransactions)
             {
                 var exists = await _context.BankTransactions
                     .AnyAsync(bt => bt.ExternalId == transaction.ExternalId && bt.BankConnectionId == connectionId);
 
                 if (!exists)
                 {
+                    transaction.BankConnectionId = connectionId;
                     _context.BankTransactions.Add(transaction);
                     newTransactions++;
                 }
@@ -140,10 +145,14 @@ public class BankingService : IBankingService
             connection.ErrorMessage = null;
             await _context.SaveChangesAsync();
 
-            return new BankConnectionSyncResult(true, mockTransactions.Count, newTransactions, null);
+            _logger.LogInformation("Sincronização concluída para conexão {ConnectionId}: {Total} transações, {New} novas", 
+                connectionId, pluggyTransactions.Count, newTransactions);
+
+            return new BankConnectionSyncResult(true, pluggyTransactions.Count, newTransactions, null);
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "Erro ao sincronizar conexão {ConnectionId}", connectionId);
             connection.Status = BankConnectionStatus.Error;
             connection.ErrorMessage = ex.Message;
             await _context.SaveChangesAsync();
@@ -218,6 +227,19 @@ public class BankingService : IBankingService
         return true;
     }
 
+    public async Task<string> CreateConnectTokenAsync(Guid userId)
+    {
+        try
+        {
+            return await _pluggyService.CreateConnectTokenAsync(userId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro ao criar Connect Token para usuário {UserId}", userId);
+            throw;
+        }
+    }
+
     private BankConnectionDto MapToDto(BankConnection connection, int pendingCount)
     {
         return new BankConnectionDto(
@@ -231,31 +253,5 @@ public class BankingService : IBankingService
             connection.AutoSync,
             pendingCount
         );
-    }
-
-    private List<BankTransaction> GenerateMockTransactions(Guid connectionId)
-    {
-        // Mock de transações para demonstração
-        var random = new Random();
-        var transactions = new List<BankTransaction>();
-        var now = DateTime.UtcNow;
-
-        for (int i = 0; i < 5; i++)
-        {
-            transactions.Add(new BankTransaction
-            {
-                Id = Guid.NewGuid(),
-                BankConnectionId = connectionId,
-                ExternalId = $"MOCK-{Guid.NewGuid()}",
-                Description = $"Transação bancária {i + 1}",
-                Amount = (decimal)(random.NextDouble() * 500 + 10),
-                Date = now.AddDays(-random.Next(1, 30)),
-                Type = random.Next(2) == 0 ? BankTransactionType.Debit : BankTransactionType.Credit,
-                Status = BankTransactionStatus.Pending,
-                CreatedAt = DateTime.UtcNow
-            });
-        }
-
-        return transactions;
     }
 }
