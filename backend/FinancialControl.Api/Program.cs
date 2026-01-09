@@ -1,10 +1,13 @@
 using FinancialControl.Api.Data;
 using FinancialControl.Api.Services;
+using FinancialControl.Api.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System.Text;
+using Hangfire;
+using Hangfire.PostgreSql;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -81,6 +84,15 @@ builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IRecurringTransactionService, RecurringTransactionService>();
 
+// Hangfire
+builder.Services.AddHangfire(configuration => configuration
+    .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+    .UseSimpleAssemblyNameTypeSerializer()
+    .UseRecommendedSerializerSettings()
+    .UsePostgreSqlStorage(c => c.UseNpgsqlConnection(connectionString)));
+
+builder.Services.AddHangfireServer();
+
 // Controllers
 builder.Services.AddControllers();
 
@@ -128,10 +140,22 @@ app.UseCors("AllowFrontend");
 app.UseAuthentication();
 app.UseAuthorization();
 
+// Hangfire Dashboard
+app.UseHangfireDashboard("/hangfire", new DashboardOptions
+{
+    Authorization = new[] { new HangfireAuthorizationFilter() }
+});
+
 app.MapControllers();
 
 // Health check
 app.MapGet("/health", () => Results.Ok(new { status = "healthy", timestamp = DateTime.UtcNow }));
+
+// Configure recurring job to process recurring transactions daily at 00:01 UTC
+RecurringJob.AddOrUpdate<IRecurringTransactionService>(
+    "process-recurring-transactions",
+    service => service.ProcessDueRecurringTransactionsAsync(),
+    Cron.Daily(0, 1)); // Runs daily at 00:01 UTC
 
 try
 {
