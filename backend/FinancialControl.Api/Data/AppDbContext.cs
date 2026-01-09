@@ -165,8 +165,8 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Alert>(entity =>
         {
             entity.HasKey(e => e.Id);
-            entity.Property(e => e.Name).IsRequired().HasMaxLength(255);
-            entity.Property(e => e.Description).HasMaxLength(500);
+            entity.Property(e => e.Type).HasConversion<string>();
+            entity.Property(e => e.Threshold).HasPrecision(18, 2);
             entity.Property(e => e.IsActive).IsRequired();
 
             entity.HasOne(e => e.Account)

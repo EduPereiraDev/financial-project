@@ -6,14 +6,11 @@ public class Alert
     public Guid AccountId { get; set; }
     public Guid UserId { get; set; }
     public AlertType Type { get; set; }
-    public string Name { get; set; } = string.Empty;
-    public string Description { get; set; } = string.Empty;
-    public bool IsActive { get; set; }
-    public decimal? ThresholdAmount { get; set; }
-    public int? ThresholdDays { get; set; }
+    public decimal Threshold { get; set; }
     public Guid? CategoryId { get; set; }
+    public bool IsActive { get; set; }
     public DateTime CreatedAt { get; set; }
-    public DateTime? LastTriggeredAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
 
     // Navigation properties
     public Account Account { get; set; } = null!;
