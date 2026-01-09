@@ -1,44 +1,14 @@
 import { useState, useEffect } from 'react'
-import { useAuth } from '@/hooks/useAuth'
-import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { authService } from '@/services/api'
-import { useNavigate, Link } from 'react-router-dom'
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts'
-import api from '@/services/api'
-
-interface DashboardStats {
-  totalIncome: number
-  totalExpense: number
-  balance: number
-  transactionCount: number
-}
-
-interface MonthlyData {
-  month: string
-  income: number
-  expense: number
-}
-
-interface CategoryData {
-  name: string
-  value: number
-}
-
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82CA9D']
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from 'recharts'
+import { dashboardService } from '@/services/dashboardService'
+import { DashboardStats } from '@/types/dashboard'
+import { ArrowUpIcon, ArrowDownIcon, TrendingUpIcon } from 'lucide-react'
 
 export default function DashboardPage() {
-  const { user, logout } = useAuth()
-  const navigate = useNavigate()
-  const [stats, setStats] = useState<DashboardStats>({
-    totalIncome: 0,
-    totalExpense: 0,
-    balance: 0,
-    transactionCount: 0
-  })
-  const [monthlyData, setMonthlyData] = useState<MonthlyData[]>([])
-  const [categoryData, setCategoryData] = useState<CategoryData[]>([])
+  const [stats, setStats] = useState<DashboardStats | null>(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     loadDashboardData()
@@ -47,71 +17,15 @@ export default function DashboardPage() {
   const loadDashboardData = async () => {
     try {
       setLoading(true)
-      
-      const [transactionsRes] = await Promise.all([
-        api.get('/transactions', { params: { page: 1, pageSize: 100 } })
-      ])
-
-      const transactions = transactionsRes.data.items || []
-
-      const income = transactions
-        .filter((t: any) => t.type === 'Income')
-        .reduce((sum: number, t: any) => sum + t.amount, 0)
-
-      const expense = transactions
-        .filter((t: any) => t.type === 'Expense')
-        .reduce((sum: number, t: any) => sum + t.amount, 0)
-
-      setStats({
-        totalIncome: income,
-        totalExpense: expense,
-        balance: income - expense,
-        transactionCount: transactions.length
-      })
-
-      const monthlyMap = new Map<string, { income: number; expense: number }>()
-      transactions.forEach((t: any) => {
-        const month = new Date(t.date).toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' })
-        const current = monthlyMap.get(month) || { income: 0, expense: 0 }
-        if (t.type === 'Income') {
-          current.income += t.amount
-        } else {
-          current.expense += t.amount
-        }
-        monthlyMap.set(month, current)
-      })
-
-      const monthly = Array.from(monthlyMap.entries())
-        .map(([month, data]) => ({ month, ...data }))
-        .slice(-6)
-
-      setMonthlyData(monthly)
-
-      const categoryMap = new Map<string, number>()
-      transactions
-        .filter((t: any) => t.type === 'Expense')
-        .forEach((t: any) => {
-          const current = categoryMap.get(t.categoryName) || 0
-          categoryMap.set(t.categoryName, current + t.amount)
-        })
-
-      const categories = Array.from(categoryMap.entries())
-        .map(([name, value]) => ({ name, value }))
-        .sort((a, b) => b.value - a.value)
-        .slice(0, 6)
-
-      setCategoryData(categories)
+      setError(null)
+      const data = await dashboardService.getStats(6)
+      setStats(data)
     } catch (err) {
       console.error('Erro ao carregar dados do dashboard:', err)
+      setError('Erro ao carregar dados do dashboard')
     } finally {
       setLoading(false)
     }
-  }
-
-  const handleLogout = () => {
-    authService.logout()
-    logout()
-    navigate('/login')
   }
 
   const formatCurrency = (value: number) => {
@@ -121,128 +35,193 @@ export default function DashboardPage() {
     }).format(value)
   }
 
+  const calculatePercentageChange = (current: number, previous: number) => {
+    if (previous === 0) return 0
+    return ((current - previous) / previous) * 100
+  }
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="text-gray-500">Carregando estatísticas...</div>
+      </div>
+    )
+  }
+
+  if (error || !stats) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="text-red-500">{error || 'Erro ao carregar dados'}</div>
+      </div>
+    )
+  }
+
+  const incomeChange = calculatePercentageChange(stats.totalIncome, stats.previousMonthIncome)
+  const expensesChange = calculatePercentageChange(stats.totalExpenses, stats.previousMonthExpenses)
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white border-b">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <h1 className="text-2xl font-bold">Dashboard</h1>
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-600">Olá, {user?.name}</span>
-            <Link to="/transactions">
-              <Button variant="outline">Transações</Button>
-            </Link>
-            <Button variant="outline" onClick={handleLogout}>
-              Sair
-            </Button>
-          </div>
-        </div>
-      </header>
+    <div className="container mx-auto px-4 py-8">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold">📊 Dashboard</h1>
+        <p className="text-gray-600 mt-2">Visão geral das suas finanças</p>
+      </div>
 
-      <main className="container mx-auto px-4 py-8">
-        {loading ? (
-          <div className="text-center py-12">
-            <p className="text-gray-600">Carregando dados...</p>
-          </div>
-        ) : (
-          <div className="space-y-6">
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardDescription>Receitas</CardDescription>
-                  <CardTitle className="text-3xl text-green-600">
-                    {formatCurrency(stats.totalIncome)}
-                  </CardTitle>
-                </CardHeader>
-              </Card>
-
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardDescription>Despesas</CardDescription>
-                  <CardTitle className="text-3xl text-red-600">
-                    {formatCurrency(stats.totalExpense)}
-                  </CardTitle>
-                </CardHeader>
-              </Card>
-
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardDescription>Saldo</CardDescription>
-                  <CardTitle className={`text-3xl ${stats.balance >= 0 ? 'text-blue-600' : 'text-red-600'}`}>
-                    {formatCurrency(stats.balance)}
-                  </CardTitle>
-                </CardHeader>
-              </Card>
-
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardDescription>Transações</CardDescription>
-                  <CardTitle className="text-3xl">
-                    {stats.transactionCount}
-                  </CardTitle>
-                </CardHeader>
-              </Card>
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-8">
+        <Card>
+          <CardHeader className="pb-2">
+            <CardDescription>Receitas do Mês</CardDescription>
+            <CardTitle className="text-3xl text-green-600">
+              {formatCurrency(stats.totalIncome)}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center text-sm">
+              {incomeChange >= 0 ? (
+                <>
+                  <ArrowUpIcon className="w-4 h-4 text-green-600 mr-1" />
+                  <span className="text-green-600">+{incomeChange.toFixed(1)}%</span>
+                </>
+              ) : (
+                <>
+                  <ArrowDownIcon className="w-4 h-4 text-red-600 mr-1" />
+                  <span className="text-red-600">{incomeChange.toFixed(1)}%</span>
+                </>
+              )}
+              <span className="text-gray-600 ml-2">vs mês anterior</span>
             </div>
+          </CardContent>
+        </Card>
 
-            <div className="grid gap-6 md:grid-cols-2">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Evolução Mensal</CardTitle>
-                  <CardDescription>Receitas vs Despesas (últimos 6 meses)</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {monthlyData.length > 0 ? (
-                    <ResponsiveContainer width="100%" height={300}>
-                      <BarChart data={monthlyData}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="month" />
-                        <YAxis />
-                        <Tooltip formatter={(value) => formatCurrency(Number(value))} />
-                        <Legend />
-                        <Bar dataKey="income" fill="#10b981" name="Receitas" />
-                        <Bar dataKey="expense" fill="#ef4444" name="Despesas" />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  ) : (
-                    <p className="text-center text-gray-500 py-12">Nenhum dado disponível</p>
-                  )}
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Despesas por Categoria</CardTitle>
-                  <CardDescription>Top 6 categorias</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {categoryData.length > 0 ? (
-                    <ResponsiveContainer width="100%" height={300}>
-                      <PieChart>
-                        <Pie
-                          data={categoryData}
-                          cx="50%"
-                          cy="50%"
-                          labelLine={false}
-                          label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`}
-                          outerRadius={80}
-                          fill="#8884d8"
-                          dataKey="value"
-                        >
-                          {categoryData.map((_, index) => (
-                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                          ))}
-                        </Pie>
-                        <Tooltip formatter={(value) => formatCurrency(Number(value))} />
-                      </PieChart>
-                    </ResponsiveContainer>
-                  ) : (
-                    <p className="text-center text-gray-500 py-12">Nenhuma despesa registrada</p>
-                  )}
-                </CardContent>
-              </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardDescription>Despesas do Mês</CardDescription>
+            <CardTitle className="text-3xl text-red-600">
+              {formatCurrency(stats.totalExpenses)}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center text-sm">
+              {expensesChange >= 0 ? (
+                <>
+                  <ArrowUpIcon className="w-4 h-4 text-red-600 mr-1" />
+                  <span className="text-red-600">+{expensesChange.toFixed(1)}%</span>
+                </>
+              ) : (
+                <>
+                  <ArrowDownIcon className="w-4 h-4 text-green-600 mr-1" />
+                  <span className="text-green-600">{expensesChange.toFixed(1)}%</span>
+                </>
+              )}
+              <span className="text-gray-600 ml-2">vs mês anterior</span>
             </div>
-          </div>
-        )}
-      </main>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2">
+            <CardDescription>Saldo do Mês</CardDescription>
+            <CardTitle className={`text-3xl ${stats.balance >= 0 ? 'text-blue-600' : 'text-red-600'}`}>
+              {formatCurrency(stats.balance)}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center text-sm">
+              <TrendingUpIcon className="w-4 h-4 text-blue-600 mr-1" />
+              <span className="text-gray-600">
+                {stats.balance >= 0 ? 'Positivo' : 'Negativo'}
+              </span>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="grid gap-6 lg:grid-cols-2 mb-8">
+        <Card>
+          <CardHeader>
+            <CardTitle>Receitas vs Despesas</CardTitle>
+            <CardDescription>Últimos 6 meses</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {stats.monthlyData.length > 0 ? (
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={stats.monthlyData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="month" />
+                  <YAxis tickFormatter={(value) => `R$ ${value}`} />
+                  <Tooltip formatter={(value) => formatCurrency(Number(value))} />
+                  <Legend />
+                  <Bar dataKey="income" fill="#10b981" name="Receitas" />
+                  <Bar dataKey="expenses" fill="#ef4444" name="Despesas" />
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <p className="text-center text-gray-500 py-12">Nenhum dado disponível</p>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Gastos por Categoria</CardTitle>
+            <CardDescription>Distribuição do mês atual</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {stats.categoryExpenses.length > 0 ? (
+              <ResponsiveContainer width="100%" height={300}>
+                <PieChart>
+                  <Pie
+                    data={stats.categoryExpenses}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={({ category, percent }) => `${category} (${(percent * 100).toFixed(0)}%)`}
+                    outerRadius={100}
+                    fill="#8884d8"
+                    dataKey="amount"
+                  >
+                    {stats.categoryExpenses.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip formatter={(value) => formatCurrency(Number(value))} />
+                </PieChart>
+              </ResponsiveContainer>
+            ) : (
+              <p className="text-center text-gray-500 py-12">Nenhuma despesa registrada</p>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Evolução do Saldo</CardTitle>
+          <CardDescription>Últimos 30 dias</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {stats.dailyBalance.length > 0 ? (
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={stats.dailyBalance}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" />
+                <YAxis tickFormatter={(value) => `R$ ${value}`} />
+                <Tooltip formatter={(value) => formatCurrency(Number(value))} />
+                <Legend />
+                <Line 
+                  type="monotone" 
+                  dataKey="balance" 
+                  stroke="#3b82f6" 
+                  strokeWidth={2}
+                  name="Saldo"
+                  dot={false}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          ) : (
+            <p className="text-center text-gray-500 py-12">Nenhum dado disponível</p>
+          )}
+        </CardContent>
+      </Card>
     </div>
   )
 }
