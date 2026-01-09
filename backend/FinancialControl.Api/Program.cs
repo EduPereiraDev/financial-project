@@ -85,6 +85,8 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IRecurringTransactionService, RecurringTransactionService>();
 builder.Services.AddScoped<IInvitationService, InvitationService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IAlertService, AlertService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 
 // Hangfire
 builder.Services.AddHangfire(configuration => configuration
