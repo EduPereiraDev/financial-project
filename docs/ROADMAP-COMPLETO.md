@@ -182,10 +182,28 @@
 - ✅ Build bem-sucedido (1.0s)
 - ✅ Commit e push para produção
 
-#### Pendente - Fase 2 (Backend)
-- ⏳ DTOs para Alert e Notification
-- ⏳ `NotificationService` (criar, listar, marcar como lida)
-- ⏳ `AlertService` (CRUD + verificar alertas)
+#### Backend Implementado - Fase 2 (09/01/2026) ✅
+- ✅ DTOs para Alert (3 DTOs: AlertDto, CreateAlertRequest, UpdateAlertRequest)
+- ✅ DTOs para Notification (3 DTOs: NotificationDto, CreateNotificationRequest, NotificationListDto)
+- ✅ `NotificationService` com 6 métodos (151 linhas)
+  - CreateNotificationAsync
+  - GetUserNotificationsAsync (com filtro unread)
+  - GetUnreadCountAsync
+  - MarkAsReadAsync
+  - MarkAllAsReadAsync
+  - DeleteNotificationAsync
+- ✅ `AlertService` com 6 métodos (147 linhas)
+  - CreateAlertAsync
+  - GetUserAlertsAsync
+  - GetAlertByIdAsync
+  - UpdateAlertAsync
+  - DeleteAlertAsync
+  - ToggleAlertAsync
+- ✅ Services registrados no Program.cs
+- ✅ Build bem-sucedido (1.0s)
+- ✅ Commit e push para produção
+
+#### Pendente - Fase 3 (Backend)
 - ⏳ `NotificationsController` (5 endpoints REST)
 - ⏳ `AlertsController` (6 endpoints REST)
 - ⏳ Job Hangfire para verificar alertas automaticamente
@@ -198,20 +216,21 @@
 - ⏳ Página de configuração de alertas
 - ⏳ Toast notifications em tempo real
 
-#### Estatísticas da Fase 1
-- **Arquivos criados**: 4
-- **Arquivos modificados**: 2
-- **Linhas de código**: ~200
-- **Commits**: 1
-- **Tempo de desenvolvimento**: ~30 min
+#### Estatísticas da Fase 1 + Fase 2
+- **Arquivos criados**: 8 (4 Fase 1 + 4 Fase 2)
+- **Arquivos modificados**: 3
+- **Linhas de código**: ~573 (200 Fase 1 + 373 Fase 2)
+- **Commits**: 2
+- **Tempo de desenvolvimento**: ~1.5 horas
 - **Build status**: ✅ 100% sucesso
 - **Deploy status**: ⏳ Em andamento
 
 #### Status Atual
-- **Backend Fase 1**: ✅ 30% completo (Modelos + DB)
-- **Backend Fase 2**: ⏳ 0% (Services + Controllers)
-- **Frontend Fase 3**: ⏳ 0% (UI completa)
-- **Progresso Total v0.4.0**: 30%
+- **Backend Fase 1**: ✅ 100% completo (Modelos + DB)
+- **Backend Fase 2**: ✅ 100% completo (DTOs + Services)
+- **Backend Fase 3**: ⏳ 0% (Controllers + Job)
+- **Frontend**: ⏳ 0% (UI completa)
+- **Progresso Total v0.4.0**: 60%
 
 ---
 
