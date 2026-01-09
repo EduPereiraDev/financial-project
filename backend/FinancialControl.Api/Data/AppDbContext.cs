@@ -14,6 +14,7 @@ public class AppDbContext : DbContext
     public DbSet<AccountMember> AccountMembers { get; set; }
     public DbSet<Transaction> Transactions { get; set; }
     public DbSet<Category> Categories { get; set; }
+    public DbSet<RecurringTransaction> RecurringTransactions { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -101,6 +102,30 @@ public class AppDbContext : DbContext
                 .WithMany(a => a.Categories)
                 .HasForeignKey(e => e.AccountId)
                 .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // RecurringTransaction
+        modelBuilder.Entity<RecurringTransaction>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Amount).HasPrecision(18, 2);
+            entity.Property(e => e.Description).IsRequired().HasMaxLength(500);
+            entity.Property(e => e.Type).HasConversion<string>();
+            entity.Property(e => e.Frequency).HasConversion<string>();
+
+            entity.HasOne(e => e.Account)
+                .WithMany()
+                .HasForeignKey(e => e.AccountId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.Category)
+                .WithMany()
+                .HasForeignKey(e => e.CategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasIndex(e => e.AccountId);
+            entity.HasIndex(e => e.NextExecutionDate);
+            entity.HasIndex(e => e.IsActive);
         });
     }
 }
