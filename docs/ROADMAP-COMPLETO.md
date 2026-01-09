@@ -1,13 +1,15 @@
 # 🗺️ Roadmap Completo - Financial Control App
 
-> **Status Atual**: v0.1.0 - MVP Funcional ✅  
-> **Última Atualização**: 08/01/2026
+> **Status Atual**: v0.2.0 - Receitas/Despesas Recorrentes (Backend) ✅  
+> **Última Atualização**: 08/01/2026 23:10 UTC-3
 
 ---
 
-## ✅ O Que Já Está Funcionando (v0.1.0)
+## ✅ O Que Já Está Funcionando
 
-### Backend (.NET 9)
+### v0.1.0 - MVP Funcional ✅
+
+#### Backend (.NET 9)
 - ✅ Autenticação JWT completa
 - ✅ CRUD de transações
 - ✅ CRUD de categorias
@@ -18,7 +20,7 @@
 - ✅ CORS configurado para Vercel
 - ✅ Swagger habilitado em produção
 
-### Frontend (React 18 + TypeScript)
+#### Frontend (React 18 + TypeScript)
 - ✅ Autenticação (login/registro)
 - ✅ Dashboard com estatísticas
 - ✅ Página de transações com paginação
@@ -27,6 +29,31 @@
 - ✅ Deploy no Vercel
 - ✅ Design responsivo
 - ✅ Integração completa com backend
+
+### v0.2.0 - Receitas/Despesas Recorrentes (Backend) ✅
+
+#### Backend Implementado (08/01/2026)
+- ✅ Modelo `RecurringTransaction` com 6 frequências
+- ✅ Migration aplicada no Supabase
+- ✅ Service com lógica de cálculo de próxima execução
+- ✅ Endpoints REST completos (CRUD + processamento)
+- ✅ Método `ProcessDueRecurringTransactionsAsync` para job
+- ✅ Build e testes bem-sucedidos
+- ✅ Commit e push para produção
+
+#### Frontend Pendente (⏳ 2-3 dias)
+- ⏳ Página de gerenciamento de recorrências
+- ⏳ Modal de cadastro/edição
+- ⏳ Lista com cards de recorrências
+- ⏳ Toggle ativo/inativo
+- ⏳ Badge "Recorrente" nas transações
+
+#### Job Agendado Pendente (⏳ 1 dia)
+- ⏳ Implementar cron job no Render
+- ⏳ Configurar execução diária
+- ⏳ Monitoramento de execuções
+
+**Documentação**: Ver `docs/RECURRING-TRANSACTIONS-TESTS.md` para detalhes técnicos
 
 ---
 
