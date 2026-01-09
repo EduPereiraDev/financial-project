@@ -1,7 +1,7 @@
 # 🗺️ Roadmap Completo - Financial Control App
 
-> **Status Atual**: v0.2.0 - Receitas/Despesas Recorrentes (Backend) ✅  
-> **Última Atualização**: 08/01/2026 23:10 UTC-3
+> **Status Atual**: v0.3.0 - Compartilhamento de Conta ✅  
+> **Última Atualização**: 09/01/2026 00:34 UTC-3
 
 ---
 
@@ -80,6 +80,62 @@
 **Documentação Completa**:
 - `docs/RECURRING-TRANSACTIONS-TESTS.md` - Testes e exemplos técnicos (414 linhas)
 - `docs/IMPLEMENTATION-SUMMARY-v0.2.0.md` - Resumo executivo completo (390 linhas)
+
+### v0.3.0 - Compartilhamento de Conta ✅ **COMPLETO**
+
+#### Backend Implementado (09/01/2026) ✅
+- ✅ Modelo `Invitation` com 5 status (Pending, Accepted, Rejected, Expired, Cancelled)
+- ✅ Migration aplicada no Supabase (6 índices)
+- ✅ `InvitationService` com 273 linhas e 6 métodos principais
+- ✅ `InvitationsController` com 5 endpoints REST
+- ✅ Geração de token seguro (32 bytes, Base64 URL-safe)
+- ✅ Validação de permissões (apenas Owner pode convidar)
+- ✅ Verificação de email duplicado
+- ✅ Expiração automática de convites (7 dias)
+- ✅ Método de limpeza de convites expirados
+- ✅ 3 níveis de permissão (Owner, Editor, Viewer)
+- ✅ Build bem-sucedido (1.0s)
+- ✅ Commit e push para produção
+
+#### Frontend Implementado (09/01/2026) ✅
+- ✅ Tipos TypeScript completos (57 linhas)
+- ✅ `invitationService` com 5 métodos
+- ✅ `AccountMembersPage` com lista de membros e convites (185 linhas)
+- ✅ `InviteMemberModal` com seleção de roles (114 linhas)
+- ✅ Rota `/members` configurada
+- ✅ Cards visuais para membros ativos
+- ✅ Lista de convites pendentes com status
+- ✅ Badges coloridos por status (Pending, Accepted, Expired, etc)
+- ✅ Seleção visual de níveis de acesso com descrições
+- ✅ Botão de cancelar convite (apenas pendentes)
+- ✅ Formatação de datas em português
+- ✅ Build bem-sucedido (998 módulos, 1.8s)
+- ✅ Commit e push para produção
+
+#### Endpoints REST (09/01/2026) ✅
+1. ✅ `POST /api/invitations` - Criar convite (JWT)
+2. ✅ `GET /api/invitations/account/{id}` - Listar convites (JWT)
+3. ✅ `GET /api/invitations/token/{token}` - Buscar por token (público)
+4. ✅ `POST /api/invitations/accept` - Aceitar convite (JWT)
+5. ✅ `DELETE /api/invitations/{id}` - Cancelar convite (JWT)
+
+#### Estatísticas da Implementação
+- **Arquivos criados**: 11
+- **Arquivos modificados**: 3
+- **Linhas de código**: ~1.180
+- **Commits**: 2
+- **Tempo de desenvolvimento**: ~2 horas
+- **Build status**: ✅ 100% sucesso
+- **Deploy status**: ⏳ Em andamento
+
+#### Funcionalidades Pendentes
+- ⏳ Página de aceitar convite (frontend)
+- ⏳ Envio de email automático com link do convite
+- ⏳ Notificação quando convite é aceito
+- ⏳ Remover membro da conta
+
+**Documentação Completa**:
+- `docs/IMPLEMENTATION-SUMMARY-v0.3.0.md` - Resumo executivo completo (380 linhas)
 
 ---
 
