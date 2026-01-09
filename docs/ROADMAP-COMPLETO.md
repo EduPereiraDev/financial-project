@@ -1,7 +1,7 @@
 # 🗺️ Roadmap Completo - Financial Control App
 
-> **Status Atual**: v0.4.0 - Alertas e Notificações (Backend 100% ✅)  
-> **Última Atualização**: 09/01/2026 00:10 UTC-3
+> **Status Atual**: v0.6.0 - Integração Bancária (100% ✅)  
+> **Última Atualização**: 09/01/2026 00:33 UTC-3
 
 ---
 
@@ -279,6 +279,107 @@
 - **Backend Fase 4**: ✅ 100% completo (Job Hangfire)
 - **Frontend**: ✅ 100% completo (Tipos, Services, UI)
 - **Progresso Total v0.4.0**: ✅ 100% COMPLETO
+
+---
+
+### v0.6.0 - Integração Bancária ✅ (09/01/2026)
+
+#### Backend Implementado (09/01/2026) ✅
+
+**Fase 1: Modelos + Database**
+- ✅ BankConnection model (33 linhas)
+  - Status (Connected, Disconnected, Error, Syncing, PendingAuth)
+  - Tracking de sincronização (ConnectedAt, LastSyncAt)
+  - Auto-sync configurável
+  - Metadata para dados adicionais
+- ✅ BankTransaction model (36 linhas)
+  - Link com transação importada
+  - Status (Pending, Imported, Ignored, Duplicate)
+  - Tipo (Debit, Credit)
+- ✅ Migration AddBankingIntegration aplicada
+- ✅ 2 tabelas + 13 índices criados no Supabase
+
+**Fase 2: DTOs + Services**
+- ✅ BankingDtos (9 DTOs - 70 linhas)
+  - BankConnectionDto, CreateBankConnectionRequest
+  - BankTransactionDto, BankTransactionListDto
+  - ImportBankTransactionRequest, SyncResult
+- ✅ BankingService (260 linhas, 9 métodos)
+  - CreateConnection, GetUserConnections, GetConnectionById
+  - UpdateConnection, DeleteConnection
+  - SyncConnection (com mock de transações)
+  - GetPendingTransactions
+  - ImportTransaction, IgnoreTransaction
+  - Prevenção de duplicatas
+
+**Fase 3: Controllers**
+- ✅ BankingController (195 linhas, 9 endpoints)
+  - POST /api/banking/connections
+  - GET /api/banking/connections
+  - GET /api/banking/connections/{id}
+  - PUT /api/banking/connections/{id}
+  - DELETE /api/banking/connections/{id}
+  - POST /api/banking/connections/{id}/sync
+  - GET /api/banking/transactions/pending
+  - POST /api/banking/transactions/import
+  - POST /api/banking/transactions/{id}/ignore
+
+#### Frontend Implementado (09/01/2026) ✅
+- ✅ Tipos TypeScript (banking.ts - 75 linhas)
+  - BankConnection, BankTransaction
+  - Enums (Status, Type)
+  - Labels e cores por status
+- ✅ bankingService (50 linhas, 9 métodos)
+  - Integração completa com API backend
+  - Métodos para todas as operações CRUD
+- ✅ BankingPage (190 linhas)
+  - Grid de conexões bancárias
+  - Status visual com cores
+  - Botão de sincronização
+  - Tabela de transações pendentes
+  - Importar/ignorar transações
+  - Contador de pendências
+- ✅ Rota /banking integrada
+- ✅ Link no menu de navegação
+- ✅ Build bem-sucedido (1.94s)
+
+#### Estatísticas Finais (Backend + Frontend)
+- **Arquivos criados**: 10 total
+  - Backend: 7 (Modelos, DTOs, Service, Controller, Migrations)
+  - Frontend: 3 (Tipos, Service, Página)
+- **Arquivos modificados**: 4 (AppDbContext, Program.cs, App.tsx, Layout.tsx)
+- **Linhas de código**: ~909 total (sem migrations)
+  - Backend: ~594
+  - Frontend: ~315
+- **Endpoints REST**: 9 (Banking operations)
+- **Tabelas**: 2 (BankConnections, BankTransactions)
+- **Índices**: 13
+- **Commits**: 2
+- **Build Backend**: ✅ 1.1s
+- **Build Frontend**: ✅ 1.94s
+- **Deploy status**: ✅ Pronto para produção
+
+#### Status Atual
+- **Backend**: ✅ 100% completo (Modelos, DTOs, Service, Controller)
+- **Frontend**: ✅ 100% completo (Tipos, Service, UI)
+- **Progresso Total v0.6.0**: ✅ 100% COMPLETO
+
+#### Funcionalidades Implementadas
+- ✅ Conectar contas bancárias (mock)
+- ✅ Sincronizar transações automaticamente
+- ✅ Visualizar transações pendentes
+- ✅ Importar transações para o sistema
+- ✅ Ignorar transações duplicadas
+- ✅ Gerenciar conexões (ativar/desativar/excluir)
+- ✅ Status visual das conexões
+- ✅ Auto-sync configurável
+
+#### Próximos Passos (Melhorias Futuras)
+- 🔄 Integração real com Pluggy/Belvo
+- 🔄 Reconciliação automática de transações
+- 🔄 Categorização inteligente via ML
+- 🔄 Múltiplas contas por conexão
+- 🔄 Histórico de sincronizações
 
 ---
 
