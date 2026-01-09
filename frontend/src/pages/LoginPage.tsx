@@ -24,25 +24,26 @@ export default function LoginPage() {
     try {
       const response = await authService.login({ email, password })
       
-      // Buscar accounts do usuário
+      // Salvar token e user primeiro
+      login(response.token, response.user)
+      
+      // Buscar accounts do usuário (não bloqueia o login se falhar)
       try {
         const accountsResponse = await api.get('/accounts')
         const accounts = accountsResponse.data
         
-        // Salvar o primeiro account (ou criar um se não existir)
+        // Salvar o primeiro account se existir
         if (accounts && accounts.length > 0) {
-          login(response.token, response.user, accounts[0].id)
-        } else {
-          login(response.token, response.user)
+          localStorage.setItem('accountId', accounts[0].id)
         }
       } catch (accountErr) {
-        console.error('Erro ao buscar accounts:', accountErr)
-        login(response.token, response.user)
+        console.warn('Não foi possível buscar accounts. Continue sem accountId.', accountErr)
       }
       
       navigate('/dashboard')
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Erro ao fazer login')
+      console.error('Erro no login:', err)
+      setError(err.response?.data?.message || err.message || 'Erro ao fazer login')
     } finally {
       setLoading(false)
     }
