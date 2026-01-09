@@ -1,7 +1,7 @@
 # 🗺️ Roadmap Completo - Financial Control App
 
-> **Status Atual**: v0.3.0 - Compartilhamento de Conta ✅  
-> **Última Atualização**: 09/01/2026 00:34 UTC-3
+> **Status Atual**: v0.4.0 - Alertas e Notificações (Backend 100% ✅)  
+> **Última Atualização**: 09/01/2026 00:10 UTC-3
 
 ---
 
