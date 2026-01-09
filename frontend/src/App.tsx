@@ -6,6 +6,7 @@ import DashboardPage from '@/pages/DashboardPage'
 import TransactionsPage from '@/pages/TransactionsPage'
 import RecurringTransactionsPage from '@/pages/RecurringTransactionsPage'
 import AccountMembersPage from '@/pages/AccountMembersPage'
+import AcceptInvitationPage from '@/pages/AcceptInvitationPage'
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, loading } = useAuth()
@@ -52,6 +53,14 @@ function App() {
           element={
             <PrivateRoute>
               <AccountMembersPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/accept-invitation/:token"
+          element={
+            <PrivateRoute>
+              <AcceptInvitationPage />
             </PrivateRoute>
           }
         />
