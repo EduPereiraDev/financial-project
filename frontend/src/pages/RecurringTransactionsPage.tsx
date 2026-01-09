@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { recurringTransactionService } from '../services/recurringTransactionService';
 import { RecurringTransaction, FREQUENCY_LABELS, FREQUENCY_ICONS } from '../types/recurringTransaction';
 import RecurringTransactionModal from '../components/RecurringTransactionModal';
+import AccountIdMissingAlert from '../components/AccountIdMissingAlert';
 
 export default function RecurringTransactionsPage() {
   const [recurringTransactions, setRecurringTransactions] = useState<RecurringTransaction[]>([]);
@@ -10,11 +11,22 @@ export default function RecurringTransactionsPage() {
   const [editingTransaction, setEditingTransaction] = useState<RecurringTransaction | null>(null);
   const accountId = localStorage.getItem('accountId') || '';
 
+  // Se não tiver accountId, mostrar alerta
+  if (!accountId) {
+    return <AccountIdMissingAlert />;
+  }
+
   useEffect(() => {
     loadRecurringTransactions();
   }, []);
 
   const loadRecurringTransactions = async () => {
+    if (!accountId) {
+      console.warn('AccountId não encontrado. Faça login novamente.');
+      setLoading(false);
+      return;
+    }
+
     try {
       setLoading(true);
       const data = await recurringTransactionService.getByAccount(accountId);
