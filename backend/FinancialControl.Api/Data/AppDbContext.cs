@@ -18,6 +18,8 @@ public class AppDbContext : DbContext
     public DbSet<Invitation> Invitations { get; set; }
     public DbSet<Alert> Alerts { get; set; }
     public DbSet<Notification> Notifications { get; set; }
+    public DbSet<BankConnection> BankConnections { get; set; }
+    public DbSet<BankTransaction> BankTransactions { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -206,6 +208,55 @@ public class AppDbContext : DbContext
             entity.HasIndex(e => e.UserId);
             entity.HasIndex(e => e.IsRead);
             entity.HasIndex(e => e.CreatedAt);
+        });
+
+        // BankConnection
+        modelBuilder.Entity<BankConnection>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.BankName).IsRequired().HasMaxLength(255);
+            entity.Property(e => e.BankCode).IsRequired().HasMaxLength(50);
+            entity.Property(e => e.InstitutionId).IsRequired().HasMaxLength(255);
+            entity.Property(e => e.ItemId).IsRequired().HasMaxLength(255);
+
+            entity.HasOne(e => e.Account)
+                .WithMany()
+                .HasForeignKey(e => e.AccountId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.User)
+                .WithMany()
+                .HasForeignKey(e => e.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasIndex(e => e.AccountId);
+            entity.HasIndex(e => e.UserId);
+            entity.HasIndex(e => e.ItemId);
+            entity.HasIndex(e => e.Status);
+        });
+
+        // BankTransaction
+        modelBuilder.Entity<BankTransaction>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.ExternalId).IsRequired().HasMaxLength(255);
+            entity.Property(e => e.Description).IsRequired().HasMaxLength(500);
+            entity.Property(e => e.Amount).HasPrecision(18, 2);
+
+            entity.HasOne(e => e.BankConnection)
+                .WithMany(bc => bc.BankTransactions)
+                .HasForeignKey(e => e.BankConnectionId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.Transaction)
+                .WithMany()
+                .HasForeignKey(e => e.TransactionId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            entity.HasIndex(e => e.BankConnectionId);
+            entity.HasIndex(e => e.ExternalId);
+            entity.HasIndex(e => e.Status);
+            entity.HasIndex(e => e.Date);
         });
     }
 }

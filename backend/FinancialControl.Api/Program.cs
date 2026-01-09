@@ -88,6 +88,7 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IAlertService, AlertService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IAlertCheckService, AlertCheckService>();
+builder.Services.AddScoped<IBankingService, BankingService>();
 
 // Hangfire
 builder.Services.AddHangfire(configuration => configuration
