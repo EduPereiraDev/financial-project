@@ -92,6 +92,7 @@ builder.Services.AddScoped<IPluggyService, PluggyService>();
 builder.Services.AddScoped<IBankingService, BankingService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<IBudgetService, BudgetService>();
+builder.Services.AddScoped<IGoalService, GoalService>();
 
 // Hangfire
 builder.Services.AddHangfire(configuration => configuration

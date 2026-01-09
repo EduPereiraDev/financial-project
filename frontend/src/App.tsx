@@ -11,6 +11,7 @@ import AcceptInvitationPage from '@/pages/AcceptInvitationPage'
 import AlertsPage from '@/pages/AlertsPage'
 import BankingPage from '@/pages/BankingPage'
 import BudgetsPage from '@/pages/BudgetsPage'
+import GoalsPage from '@/pages/GoalsPage'
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, loading } = useAuth()
@@ -89,6 +90,14 @@ function App() {
           element={
             <PrivateRoute>
               <BudgetsPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/goals"
+          element={
+            <PrivateRoute>
+              <GoalsPage />
             </PrivateRoute>
           }
         />

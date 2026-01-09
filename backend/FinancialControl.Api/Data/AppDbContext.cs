@@ -21,6 +21,8 @@ public class AppDbContext : DbContext
     public DbSet<BankConnection> BankConnections { get; set; }
     public DbSet<BankTransaction> BankTransactions { get; set; }
     public DbSet<Budget> Budgets { get; set; }
+    public DbSet<Goal> Goals { get; set; }
+    public DbSet<GoalContribution> GoalContributions { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -280,6 +282,44 @@ public class AppDbContext : DbContext
             entity.HasIndex(e => e.UserId);
             entity.HasIndex(e => e.CategoryId);
             entity.HasIndex(e => new { e.UserId, e.CategoryId, e.Month, e.Year }).IsUnique();
+        });
+
+        // Goal
+        modelBuilder.Entity<Goal>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Name).IsRequired().HasMaxLength(255);
+            entity.Property(e => e.Description).HasMaxLength(1000);
+            entity.Property(e => e.TargetAmount).HasPrecision(18, 2);
+            entity.Property(e => e.CurrentAmount).HasPrecision(18, 2);
+            entity.Property(e => e.Status).HasConversion<string>();
+            entity.Property(e => e.Priority).HasConversion<string>();
+            entity.Property(e => e.ImageUrl).HasMaxLength(500);
+
+            entity.HasOne(e => e.User)
+                .WithMany()
+                .HasForeignKey(e => e.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasIndex(e => e.UserId);
+            entity.HasIndex(e => e.Status);
+            entity.HasIndex(e => e.TargetDate);
+        });
+
+        // GoalContribution
+        modelBuilder.Entity<GoalContribution>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Amount).HasPrecision(18, 2);
+            entity.Property(e => e.Note).HasMaxLength(500);
+
+            entity.HasOne(e => e.Goal)
+                .WithMany(g => g.Contributions)
+                .HasForeignKey(e => e.GoalId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasIndex(e => e.GoalId);
+            entity.HasIndex(e => e.ContributedAt);
         });
     }
 }
