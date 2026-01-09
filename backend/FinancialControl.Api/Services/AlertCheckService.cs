@@ -36,17 +36,17 @@ public class AlertCheckService : IAlertCheckService
             {
                 case AlertType.MonthlySpendingLimit:
                     shouldTrigger = await CheckMonthlySpendingLimit(alert);
-                    notificationMessage = $"Seus gastos mensais ultrapassaram o limite de {alert.ThresholdAmount:C}";
+                    notificationMessage = $"Seus gastos mensais ultrapassaram o limite de {alert.Threshold:C}";
                     break;
 
                 case AlertType.LowBalance:
                     shouldTrigger = await CheckLowBalance(alert);
-                    notificationMessage = $"Saldo baixo na conta {alert.Account.Name}: abaixo de {alert.ThresholdAmount:C}";
+                    notificationMessage = $"Saldo baixo na conta {alert.Account.Name}: abaixo de {alert.Threshold:C}";
                     break;
 
                 case AlertType.CategoryBudgetExceeded:
                     shouldTrigger = await CheckCategoryBudget(alert);
-                    notificationMessage = $"Orçamento da categoria excedido: {alert.ThresholdAmount:C}";
+                    notificationMessage = $"Orçamento da categoria excedido: {alert.Threshold:C}";
                     break;
             }
 
@@ -54,7 +54,7 @@ public class AlertCheckService : IAlertCheckService
             {
                 await CreateNotificationForAlert(alert, notificationMessage);
                 
-                alert.LastTriggeredAt = DateTime.UtcNow;
+                alert.UpdatedAt = DateTime.UtcNow;
                 await _context.SaveChangesAsync();
             }
         }
@@ -62,8 +62,6 @@ public class AlertCheckService : IAlertCheckService
 
     private async Task<bool> CheckMonthlySpendingLimit(Alert alert)
     {
-        if (!alert.ThresholdAmount.HasValue) return false;
-
         var startOfMonth = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1);
         var totalSpent = await _context.Transactions
             .Where(t => t.AccountId == alert.AccountId 
@@ -72,13 +70,11 @@ public class AlertCheckService : IAlertCheckService
                      && t.Date < DateTime.UtcNow)
             .SumAsync(t => t.Amount);
 
-        return totalSpent > alert.ThresholdAmount.Value;
+        return totalSpent > alert.Threshold;
     }
 
     private async Task<bool> CheckLowBalance(Alert alert)
     {
-        if (!alert.ThresholdAmount.HasValue) return false;
-
         var totalIncome = await _context.Transactions
             .Where(t => t.AccountId == alert.AccountId && t.Type == TransactionType.Income)
             .SumAsync(t => t.Amount);
@@ -89,12 +85,12 @@ public class AlertCheckService : IAlertCheckService
 
         var balance = totalIncome - totalExpense;
 
-        return balance < alert.ThresholdAmount.Value;
+        return balance < alert.Threshold;
     }
 
     private async Task<bool> CheckCategoryBudget(Alert alert)
     {
-        if (!alert.ThresholdAmount.HasValue || !alert.CategoryId.HasValue) return false;
+        if (!alert.CategoryId.HasValue) return false;
 
         var startOfMonth = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1);
         var categorySpent = await _context.Transactions
@@ -105,7 +101,7 @@ public class AlertCheckService : IAlertCheckService
                      && t.Date < DateTime.UtcNow)
             .SumAsync(t => t.Amount);
 
-        return categorySpent > alert.ThresholdAmount.Value;
+        return categorySpent > alert.Threshold;
     }
 
     private async Task CreateNotificationForAlert(Alert alert, string message)
@@ -123,7 +119,7 @@ public class AlertCheckService : IAlertCheckService
             alert.UserId,
             alert.Id,
             NotificationType.Warning,
-            alert.Name,
+            $"Alert {alert.Type}",
             message,
             $"/alerts/{alert.Id}",
             null

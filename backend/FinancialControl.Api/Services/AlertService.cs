@@ -32,13 +32,11 @@ public class AlertService : IAlertService
             AccountId = request.AccountId,
             UserId = userId,
             Type = request.Type,
-            Name = request.Name,
-            Description = request.Description,
-            IsActive = true,
-            ThresholdAmount = request.ThresholdAmount,
-            ThresholdDays = request.ThresholdDays,
+            Threshold = request.ThresholdAmount ?? 0,
             CategoryId = request.CategoryId,
-            CreatedAt = DateTime.UtcNow
+            IsActive = true,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
         };
 
         _context.Alerts.Add(alert);
@@ -77,12 +75,10 @@ public class AlertService : IAlertService
             return null;
         }
 
-        if (request.Name != null) alert.Name = request.Name;
-        if (request.Description != null) alert.Description = request.Description;
         if (request.IsActive.HasValue) alert.IsActive = request.IsActive.Value;
-        if (request.ThresholdAmount.HasValue) alert.ThresholdAmount = request.ThresholdAmount;
-        if (request.ThresholdDays.HasValue) alert.ThresholdDays = request.ThresholdDays;
+        if (request.ThresholdAmount.HasValue) alert.Threshold = request.ThresholdAmount.Value;
         if (request.CategoryId.HasValue) alert.CategoryId = request.CategoryId;
+        alert.UpdatedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
 
@@ -133,15 +129,15 @@ public class AlertService : IAlertService
             alert.AccountId,
             alert.UserId,
             alert.Type,
-            alert.Name,
-            alert.Description,
+            $"Alert {alert.Type}", // Name gerado a partir do Type
+            string.Empty, // Description vazio
             alert.IsActive,
-            alert.ThresholdAmount,
-            alert.ThresholdDays,
+            alert.Threshold, // ThresholdAmount
+            null, // ThresholdDays não existe mais
             alert.CategoryId,
             categoryName,
             alert.CreatedAt,
-            alert.LastTriggeredAt
+            alert.UpdatedAt // Usando UpdatedAt no lugar de LastTriggeredAt
         );
     }
 }
